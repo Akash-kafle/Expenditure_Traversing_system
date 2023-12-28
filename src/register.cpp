@@ -66,6 +66,8 @@ void Register::on_registerButton_clicked()
     QString register_username, register_password;
     register_username = ui->registerUsernameInput->text();
     register_password = ui->registerPasswordInput->text();
+    QString register_qes = ui->qs_1_input->text();
+    QString register_qes1 = ui->qs_2_input->text();
 
     QRegularExpression username_pattern("^[a-zA-Z0-9_-]{5,10}$");
     QRegularExpressionMatch username_valid = username_pattern.match(register_username);
@@ -84,19 +86,19 @@ void Register::on_registerButton_clicked()
 
         db_conn_open();
         QSqlQuery register_query;
-        register_query.prepare("INSERT INTO credentials (username, password) VALUES ('" + register_username + "', '" + register_password + "')");
+        register_query.prepare("INSERT INTO credentials (username, password,ans1,ans2) VALUES ('" + register_username + "', '" + register_password +  "', '" + register_qes+"', '" +register_qes1+"')");
 
         if(register_query.exec()){
             QSqlQuery add_table_income;
-            add_table_income.prepare("CREATE TABLE " + register_username + "_in (id INTEGER PRIMARY KEY,date TEXT, reason DOUBLE, amount INTEGER)");
+            add_table_income.prepare("CREATE TABLE " + register_username + "_in (id INTEGER PRIMARY KEY,date TEXT, reason TEXT, amount INTEGER)");
 
             QSqlQuery add_table_expense;
-            add_table_expense.prepare("CREATE TABLE " + register_username + "_ex (id INTEGER PRIMARY KEY,date TEXT ,reason DOUBLE, amount INTEGER)");
+            add_table_expense.prepare("CREATE TABLE " + register_username + "_ex (id INTEGER PRIMARY KEY,date TEXT ,reason TEXT, amount INTEGER)");
 
             if (add_table_income.exec() && add_table_expense.exec()){
                 qDebug() << "New tables added";
 
-                QFile file("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/ETS/ETS/ETS/main/temp.txt");
+                QFile file("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/main/temp.txt");
                 QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("temp.txt");
                 qDebug() << temp_file_path;
 

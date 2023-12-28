@@ -2,24 +2,22 @@
 #include "ui_mainwindow.h"
 #include <QtDebug>
 #include <QMessageBox>
+#include <QBEInteger>
 
 // #include <QIntValidator>
 
 #include "header/login.h"
 
 void createFinancialReport(QString);
-void paintPieChart(QPainter* painter, const QRectF& rect, const QList<double>& data);
-
+void paintPieChart(QPainter *painter, const QRectF &rect, const QList<double> &data);
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(), // parent was passed here
-    ui(new Ui::MainWindow)
+                                          ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-
-
     // file stuffs
-    QFile file("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/ETS/ETS/ETS/main/temp.txt"); // change path for your system
+    QFile file("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/main/text.txt"); // change path for your system
     QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("temp.txt");
     qDebug() << temp_file_path;
     // QFile file(temp_file_path);
@@ -27,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(), // parent was passed he
     if (!file.open(QFile::ReadOnly | QFile::Text))
     {
         qDebug() << "File not opened";
+        qDebug()<<file.errorString();
         return;
     }
     else
@@ -47,20 +46,20 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(), // parent was passed he
 
     QDoubleValidator *number_input_validator = new QDoubleValidator(0.0, 100000000.0, 2, this);
     ui->transaction_ID->setValidator(number_input_validator);
-    //ui->amount1_input->setValidator(number_input_validator);
-    // ui->amount2_input->setValidator(number_input_validator);
+    // ui->amount1_input->setValidator(number_input_validator);
+    //  ui->amount2_input->setValidator(number_input_validator);
 
     // for phone_input, accepts only phone no. as 98xxxxxxxx
     QRegularExpression phone_rx("98\\d{8}");
     QValidator *phone_validator = new QRegularExpressionValidator(phone_rx, this);
-    //ui->phone_input->setValidator(phone_validator);
+    // ui->phone_input->setValidator(phone_validator);
 
     // for date_input
     QRegularExpression date_rx("[12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])");
     QValidator *date_validator = new QRegularExpressionValidator(date_rx, this);
     ui->date_input->setValidator(date_validator);
 
-    //ui->name_input->setPlaceholderText("Buyer's name");
+    // ui->name_input->setPlaceholderText("Buyer's name");
 
     //  ui->amount1_input->setToolTip("Enter the total amount the buyer needs to give you.");
     //  ui->amount2_input->setToolTip("Enter the amount the buyer gave to you.");
@@ -70,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(), // parent was passed he
     //   ui->amount2_input->setPlaceholderText("Received");
     // ui->amount3_input->setPlaceholderText("Receivable");
 
-    //ui->amount3_input->setReadOnly(true);
+    // ui->amount3_input->setReadOnly(true);
 
     ui->buyer_or_seller_drop_menu->addItem("income");
     ui->buyer_or_seller_drop_menu->addItem("expense");
@@ -86,22 +85,27 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(), // parent was passed he
     // to load data into the table
     on_view_button_clicked();
 
-    list_income <<""<< "family"<<"personal";
-    list_expense <<""<<"rent"<<"food"<<"entertainment"<<"travel"<<"study"<<"other";
+    list_income << ""
+                << "family"
+                << "personal";
+    list_expense << ""
+                 << "rent"
+                 << "food"
+                 << "entertainment"
+                 << "travel"
+                 << "study"
+                 << "other";
 
-    if(ui->select_expense_btn){
-        ui->reason_of_transaction->addItems(list_expense);
-
-    }
-    else{
-        ui->reason_of_transaction->addItems(list_income);
-
-    }
+    ui->reason_of_transaction->clear();
+    ui->reason_of_transaction->addItems(list_income);
+    ui->reason_of_transaction->update();
 }
 
 MainWindow::~MainWindow()
 {
+
     delete ui;
+    ui= nullptr;
 }
 
 void MainWindow::set_icons()
@@ -112,8 +116,8 @@ void MainWindow::set_icons()
     QPixmap dateIcon(":/img/img/calendar.png");
     ui->date_icon->setPixmap(dateIcon.scaled(24, 24, Qt::KeepAspectRatio));
 
-    //QPixmap nameIcon(":/img/img/name.png");
-    // ui->name_icon->setPixmap(nameIcon.scaled(24, 24, Qt::KeepAspectRatio));
+    // QPixmap nameIcon(":/img/img/name.png");
+    //  ui->name_icon->setPixmap(nameIcon.scaled(24, 24, Qt::KeepAspectRatio));
 
     //  QPixmap addressIcon(":/img/img/location.png");
     //  ui->address_icon->setPixmap(addressIcon.scaled(24, 24, Qt::KeepAspectRatio));
@@ -122,9 +126,9 @@ void MainWindow::set_icons()
     // ui->phone_icon->setPixmap(phoneIcon.scaled(24, 24, Qt::KeepAspectRatio));
 
     QPixmap ruIcon(":/img/img/ru.png");
-    //ui->debit_icon->setPixmap(ruIcon.scaled(26, 26, Qt::KeepAspectRatio));
-    // ui->credit_icon->setPixmap(ruIcon.scaled(26, 26, Qt::KeepAspectRatio));
-    // ui->net_amount_icon->setPixmap(ruIcon.scaled(26, 26, Qt::KeepAspectRatio));
+    // ui->debit_icon->setPixmap(ruIcon.scaled(26, 26, Qt::KeepAspectRatio));
+    //  ui->credit_icon->setPixmap(ruIcon.scaled(26, 26, Qt::KeepAspectRatio));
+    //  ui->net_amount_icon->setPixmap(ruIcon.scaled(26, 26, Qt::KeepAspectRatio));
 
     QPixmap remarksIcon(":/img/img/pencil.png");
     ui->remarks_icon->setPixmap(remarksIcon.scaled(24, 24, Qt::KeepAspectRatio));
@@ -178,13 +182,11 @@ void MainWindow::set_icons()
     QIcon help_icon(help);
     ui->help_button->setIcon(help_icon);
     ui->help_button->setIconSize(QSize(32, 32));
-
-
-
 }
 
 void MainWindow::on_save_button_clicked()
 {
+    QVariant date = QDate::currentDate().toString();
     /*QString id = ui->transaction_ID->text();
     int id_empty = id.isEmpty();
 
@@ -212,12 +214,13 @@ void MainWindow::on_save_button_clicked()
 
     QString remarks = ui->remarks_input->text();*/
     bool all{};
-    QString id,date,reason,amount;
-    id = ui->transaction_ID->text();
-    date = QDate::currentDate().toString();
+
+    QVariant  reason, id, amount;
+    id = ui->transaction_ID->text().toInt();
+    date = ui->date_input->text();
     reason = ui->reason_of_transaction->currentText();
-    amount = ui->amount_input->text();
-    all = id.isEmpty()||reason.isEmpty()||amount.isEmpty();
+    amount = ui->amount_input->text().toInt();
+    all = id.isNull()||date.isNull()||reason.isNull()||amount.isNull();
     if (!db_conn_open())
     {
         qDebug() << "Database connection failed";
@@ -228,13 +231,40 @@ void MainWindow::on_save_button_clicked()
     {
         db_conn_open();
         QSqlQuery save_query;
+        QString tableName;
 
         if (ui->select_income_btn->isChecked())
-            save_query.prepare("INSERT INTO " + temp_username + "_in (`id` , date, reason, amount ) VALUES "
-                                                                "(" + id + ",'" + date + "', '" + reason + "','" + amount +"')");
+        {
+            tableName = temp_username + "_in";
+        }
         else if (ui->select_expense_btn->isChecked())
-            save_query.prepare("INSERT INTO " + temp_username + "_ex (`id` , date, reason, amount ) VALUES "
-                                                                "(" + id + ",'" + date + "', '" + reason + "','" + amount +"')");
+        {
+            tableName = temp_username + "_ex";
+        }
+
+        if (!tableName.isEmpty())
+        {
+            save_query.prepare("INSERT INTO " + tableName + " (`id`, date, reason, amount) VALUES (:id, :date, :reason, :amount)");
+            save_query.bindValue(":id", id);
+            save_query.bindValue(":date",date);
+            save_query.bindValue(":reason", reason);
+            save_query.bindValue(":amount", amount);
+
+            if (save_query.exec())
+            {
+                qDebug() << "Insertion successful!";
+                on_save_button_clicked();
+                db_conn_close();
+            }
+            else
+            {
+                qDebug() << "Error:" << save_query.lastError().text();
+            }
+        }
+        else
+        {
+            qDebug() << "No table selected!";
+        }
 
         if (save_query.exec())
         {
@@ -254,7 +284,7 @@ void MainWindow::on_save_button_clicked()
                 QMessageBox::warning(this, "Same Transaction ID", "Oops, you have a record with same Transaction ID. Try a different one.");
             else
                 QMessageBox::warning(this, "Error encountered", save_query.lastError().text());
-            qDebug()<<save_query.lastError().text();
+                qDebug() << save_query.lastError().text();
 
             db_conn_close();
         }
@@ -285,7 +315,8 @@ void MainWindow::on_update_button_clicked()
     QMessageBox::StandardButton reply_from_user = QMessageBox::question(this, " ", "Do you want to update the selected record?", QMessageBox::Yes | QMessageBox::No);
 
     if (reply_from_user == QMessageBox::Yes)
-    {  bool all {};
+    {
+        bool all{};
 
         QString id = ui->transaction_ID->text();
         QString date = QDate::currentDate().toString();
@@ -303,7 +334,7 @@ void MainWindow::on_update_button_clicked()
 
         QString remarks = ui->remarks_input->text();
 */
-        all = id.isEmpty()||date.isEmpty()||amount.isEmpty();
+        all = id.isEmpty() || date.isEmpty() || amount.isEmpty();
         if (!db_conn_open())
         {
             qDebug() << "Failed to Open The Database";
@@ -314,12 +345,14 @@ void MainWindow::on_update_button_clicked()
         {
             db_conn_open();
 
-            QString income_or_expense,reason;
-            if (ui->select_expense_btn->isChecked()){
+            QString income_or_expense, reason;
+            if (ui->select_expense_btn->isChecked())
+            {
                 income_or_expense = temp_username + "_ex";
                 reason = ui->reason_of_transaction->currentText();
             }
-            else if (ui->select_income_btn->isChecked()){
+            else if (ui->select_income_btn->isChecked())
+            {
                 income_or_expense = temp_username + "_in";
                 reason = ui->reason_of_transaction->currentText();
             }
@@ -341,9 +374,9 @@ void MainWindow::on_update_button_clicked()
                 QSqlQuery update_qry;
 
                 if (ui->select_income_btn->isChecked())
-                    update_qry.prepare("UPDATE " + income_or_expense + " SET Date = '" + date +"reason = '"+reason + "' WHERE `Transaction ID` = " + id);
+                    update_qry.prepare("UPDATE " + income_or_expense + " SET Date = '" + date + "reason = '" + reason + "' WHERE `Transaction ID` = " + id);
                 else if (ui->select_expense_btn->isChecked())
-                    update_qry.prepare("UPDATE " + income_or_expense + " SET Date = '" + date +"reason = '"+reason + "' WHERE `Transaction ID` = " + id);
+                    update_qry.prepare("UPDATE " + income_or_expense + " SET Date = '" + date + "reason = '" + reason + "' WHERE `Transaction ID` = " + id);
                 if (update_qry.exec())
                 {
                     QMessageBox::information(this, tr(" "), tr("Record has been updated successfully."));
@@ -519,20 +552,22 @@ void MainWindow::view_export(int ve)
         { // for buyer
             textData = "User:," + temp_username + "\nRecords of:, income\nTransaction ID, Date, reason , amount \n";
             file_name = temp_username + "_income.csv";
-            int i =0;
-            while(QFileInfo::exists("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/ETS/ETS/ETS/export/"+file_name)){
+            int i = 0;
+            while (QFileInfo::exists("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/ETS/ETS/ETS/export/" + file_name))
+            {
                 ++i;
-                file_name = temp_username+i+"_income.csv";
+                file_name = temp_username + i + "_income.csv";
             }
         }
         else if (income_or_expense_index)
         { // for buyer
             textData = "User:," + temp_username + "\nRecords of:, expense\nTransaction ID, Date, reason , amount\n";
             file_name = temp_username + "_expense.csv";
-            int i=0;
-            while(QFileInfo::exists("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/export/"+file_name)){
+            int i = 0;
+            while (QFileInfo::exists("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/export/" + file_name))
+            {
                 ++i;
-                file_name = temp_username + i+ "_income.csv";
+                file_name = temp_username + i + "_income.csv";
             }
         }
 
@@ -547,7 +582,7 @@ void MainWindow::view_export(int ve)
         }
 
         // to create .csv file
-        QFile csvFile("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/export/" + file_name); //change path; can be made dynamic
+        QFile csvFile("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/export/" + file_name); // change path; can be made dynamic
         QString csv_path = QDir(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)).filePath(file_name);
         qDebug() << csv_path;
         // QFile csvFile(csv_path);
@@ -575,7 +610,7 @@ void MainWindow::view_export(int ve)
 
 void MainWindow::on_sort_by_drop_menu_currentIndexChanged(int index)
 {
-    if (index == 0 )
+    if (index == 0)
     {
         ui->order_by_drop_menu->clear();
         ui->order_by_drop_menu->addItem("Lowest first");
@@ -709,7 +744,7 @@ void MainWindow::on_filter_by_drop_menu_currentIndexChanged(int index)
             ui->filter_condn_drop_menu->addItem(month);
         }
     }
-    else if (index == 2 )
+    else if (index == 2)
     {
         ui->filter_condn_drop_menu->clear();
         QString alpha_ranges[5] = {"A-E", "F-J", "K-O", "P-T", "U-Z"};
@@ -775,10 +810,10 @@ void MainWindow::filter_view_export(int fve)
             {
                 QString month = QString::number(month_number);
                 filter_qry->prepare("SELECT * FROM " + income_or_expense + " WHERE Date LIKE '____-0" + month + "-__'"); // example, %01%, %02%, ..., %09%
-            }                                                                                                          // Date has been restricted to be in other form
+            }                                                                                                            // Date has been restricted to be in other form
             else
             {
-                QString month = QString::number(month_number - 10);                                                    // if selected index + 1 >= 10 then month will be 10 - 10, 11 - 10, 12 - 10 respectively
+                QString month = QString::number(month_number - 10);                                                      // if selected index + 1 >= 10 then month will be 10 - 10, 11 - 10, 12 - 10 respectively
                 filter_qry->prepare("SELECT * FROM " + income_or_expense + " WHERE Date LIKE '____-1" + month + "-__'"); // example, %10%, %11%, %12%
             }
         }
@@ -898,7 +933,6 @@ void MainWindow::on_display_area_activated(const QModelIndex &index)
             qry.prepare("SELECT * FROM " + temp_username + "_in WHERE `Transaction ID` = '" + val + "'");
             ui->select_income_btn->setChecked(true);
             ui->reason_of_transaction->addItems(list_expense);
-
         }
 
         if (qry.exec())
@@ -907,13 +941,13 @@ void MainWindow::on_display_area_activated(const QModelIndex &index)
             {
                 ui->transaction_ID->setText(qry.value(0).toString());
                 ui->date_input->setText(qry.value(1).toString());
-                //ui->name_input->setText(qry.value(2).toString());
-                //ui->address_input->setText(qry.value(3).toString());
-                //ui->phone_input->setText(qry.value(4).toString());
-                //ui->amount1_input->setText(qry.value(5).toString());
-                //ui->amount2_input->setText(qry.value(6).toString());
-                //ui->amount3_input->setText(qry.value(7).toString());
-                //ui->remarks_input->setText(qry.value(8).toString());
+                // ui->name_input->setText(qry.value(2).toString());
+                // ui->address_input->setText(qry.value(3).toString());
+                // ui->phone_input->setText(qry.value(4).toString());
+                // ui->amount1_input->setText(qry.value(5).toString());
+                // ui->amount2_input->setText(qry.value(6).toString());
+                // ui->amount3_input->setText(qry.value(7).toString());
+                // ui->remarks_input->setText(qry.value(8).toString());
             }
             db_conn_close();
         }
@@ -946,7 +980,7 @@ void MainWindow::on_apply_sort_btn_clicked()
 
     ui->buyer_or_seller_drop_menu->setCurrentIndex(0);
     ui->sort_by_drop_menu->clear();
-    QString sort_by[] = {"Transaction ID", "Date","reason","amount"};
+    QString sort_by[] = {"Transaction ID", "Date", "reason", "amount"};
     // adding options in sort_by_opt_drop_menu
     for (auto &sort_by_opt : sort_by)
     {
@@ -963,7 +997,7 @@ void MainWindow::on_apply_filter_btn_clicked()
 
     ui->buyer_or_seller_drop_menu->setCurrentIndex(0);
     ui->filter_by_drop_menu->clear();
-    QString filter_by[] = {"Transaction ID", "Month", "reason","amount"};
+    QString filter_by[] = {"Transaction ID", "Month", "reason", "amount"};
     // adding options in filter_by_drop_menu
     for (auto &filter_by_opt : filter_by)
     {
@@ -987,7 +1021,7 @@ void MainWindow::on_show_graph_btn_clicked()
 {
     QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("temp.txt");
     qDebug() << temp_file_path;
-    QFile file("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/main/temp.txt");
+    QFile file("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/main/text.txt");
 
     if (!file.open(QFile::WriteOnly | QFile::Text))
     {
@@ -1014,28 +1048,18 @@ void MainWindow::on_select_income_btn_clicked()
     ui->buyer_or_seller_drop_menu->setCurrentIndex(0);
 
     ui->amount_input->setToolTip("Enter the total amount");
-    //ui->amount2_input->setToolTip("Enter the amount the buyer gave to you.");
-    //ui->amount3_input->setToolTip("Receivable or remaining amount to be received will be displayed here once you click on 'Calculate'.");
+
     ui->reason_of_transaction->clear();
-    for(auto item: list_income){
-        ui->reason_of_transaction->addItem(item);
-    }
+    ui->reason_of_transaction->addItems(list_income);
+    ui->reason_of_transaction->update();
 }
 
 void MainWindow::on_select_expense_btn_clicked()
 {
     ui->buyer_or_seller_drop_menu->setCurrentIndex(1);
-
-    ui->amount_input->setToolTip("Enter the total amount");
-    //ui->amount2_input->setToolTip("Enter the amount you gave to the seller.");
-    //ui->amount3_input->setToolTip("Payable or remaining amount to be paid will be displayed here once you click on 'Calculate'.");
-
-    //ui->name_input->setPlaceholderText("expense");
-    //ui->amount2_input->setPlaceholderText("Paid");
-    //ui->amount3_input->setPlaceholderText("Payable");
     ui->reason_of_transaction->clear();
-    for(auto item : list_expense)
-        ui->reason_of_transaction->addItem(item);
+    ui->reason_of_transaction->addItems(list_expense);
+    ui->reason_of_transaction->update();
 }
 
 void MainWindow::on_help_button_clicked()
@@ -1051,14 +1075,14 @@ void MainWindow::on_buyer_or_seller_drop_menu_currentIndexChanged(int index)
         ui->sort_by_drop_menu->clear();
         if (!index)
         {
-            QString sort_by[8] = {"Transaction ID", "Date", "reason","amount"};
+            QString sort_by[8] = {"Transaction ID", "Date", "reason", "amount"};
             // adding options in sort_by_opt_drop_menu
             for (auto &sort_by_opt : sort_by)
                 ui->sort_by_drop_menu->addItem(sort_by_opt);
         }
         else if (index)
         {
-            QString sort_by[8] = {"Transaction ID", "Date", "reason","amount"};
+            QString sort_by[8] = {"Transaction ID", "Date", "reason", "amount"};
             // adding options in sort_by_opt_drop_menu
             for (auto &sort_by_opt : sort_by)
                 ui->sort_by_drop_menu->addItem(sort_by_opt);
@@ -1069,14 +1093,14 @@ void MainWindow::on_buyer_or_seller_drop_menu_currentIndexChanged(int index)
         ui->filter_by_drop_menu->clear();
         if (!index)
         {
-            QString filter_by[] = {"Transaction ID", "Month","reason","amount"};
+            QString filter_by[] = {"Transaction ID", "Month", "reason", "amount"};
             // adding options in filter_by_drop_menu
             for (auto &filter_by_opt : filter_by)
                 ui->filter_by_drop_menu->addItem(filter_by_opt);
         }
         else if (index)
         {
-            QString filter_by[] = {"Transaction ID", "Month","reason","amount"};
+            QString filter_by[] = {"Transaction ID", "Month", "reason", "amount"};
             // adding options in filter_by_drop_menu
             for (auto &filter_by_opt : filter_by)
                 ui->filter_by_drop_menu->addItem(filter_by_opt);
@@ -1085,30 +1109,47 @@ void MainWindow::on_buyer_or_seller_drop_menu_currentIndexChanged(int index)
 }
 
 void MainWindow::on_show_graph_btn_2_clicked()
-{   int  i = 0;
-    QString filePath {"C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/export/"+temp_username+"_report_("+i+").pdf"};
+{
+    static int clicker = 0;
+    if (0 == clicker)
+    {
+        int i = 0;
+        /* //QString filePath {"C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/export/"+temp_username+"_report_("+i+").ppt"};
 
-    while(QFile::exists(filePath)){
-        ++i;
-        filePath = "C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/export/"+temp_username+"_report_("+i+").pdf";
+         while(QFile::exists(filePath)){
+             ++i;
+             //filePath = "C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/export/"+temp_username+"_report_("+i+").ppt";
+         }*/
+        QString filePath = QFileDialog::getSaveFileName(this, "Save PDF", "", "*.pdf");
+        createFinancialReport(filePath);
     }
-    createFinancialReport(filePath);
+    else
+    {
+        if (QMessageBox::question(this, "Confirm", "already clicked once do you wish to continue") == QMessageBox::Yes)
+        {
+            clicker = 0;
+            on_show_graph_btn_2_clicked();
+        }
+    }
+    clicker++;
 }
 
-
-void MainWindow::createFinancialReport(const QString& filePath) {
+void MainWindow::createFinancialReport(const QString &filePath)
+{
     QList<Transaction> transactions;
     QSqlQuery query;
     // Open the SQLite database
     QSqlDatabase database = QSqlDatabase::addDatabase("QSQLITE");
     database.setDatabaseName("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/main/main.db");
     MainWindow w;
-    if (!database.open()) {
+    if (!database.open())
+    {
         qDebug() << "Failed to open database";
         return;
     }
     QFile file(filePath);
-    if (!file.open(QIODevice::WriteOnly|QIODevice::Truncate)) {
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+    {
         qDebug() << "Cannot open file for reading: " << qPrintable(file.errorString());
         return;
     }
@@ -1117,9 +1158,6 @@ void MainWindow::createFinancialReport(const QString& filePath) {
     QPdfWriter pdfWriter(filePath);
     pdfWriter.setPageSize(QPageSize(QPageSize::A4));
     pdfWriter.setPageOrientation(QPageLayout::Portrait);
-
-
-
 
     // Create a painter to draw on the PDF
     QPainter painter(&pdfWriter);
@@ -1141,7 +1179,8 @@ void MainWindow::createFinancialReport(const QString& filePath) {
     QFont tableRowFont("Arial", 10);
     painter.setFont(tableRowFont);
     int row = 0;
-    while (query.next()) {
+    while (query.next())
+    {
         QString date = query.value("date").toString();
         QString type = query.value("type").toString();
         double amount = query.value("amount").toDouble();
@@ -1158,11 +1197,13 @@ void MainWindow::createFinancialReport(const QString& filePath) {
     // Fetch transactions from the income table
     QSqlQuery incomeQuery;
     incomeQuery.prepare(QString("SELECT * FROM %1_in").arg(temp_username));
-    if (!incomeQuery.exec()) {
+    if (!incomeQuery.exec())
+    {
         qDebug() << "Failed to execute query";
         return;
     }
-    while (incomeQuery.next()) {
+    while (incomeQuery.next())
+    {
         Transaction transaction;
         transaction.date = incomeQuery.value("date").toDate();
         transaction.type = "income";
@@ -1174,11 +1215,13 @@ void MainWindow::createFinancialReport(const QString& filePath) {
     // Fetch transactions from the expense table
     QSqlQuery expenseQuery;
     expenseQuery.prepare(QString("SELECT * FROM %1_ex").arg(temp_username));
-    if (!expenseQuery.exec()) {
+    if (!expenseQuery.exec())
+    {
         qDebug() << "Failed to execute query";
         return;
     }
-    while (expenseQuery.next()) {
+    while (expenseQuery.next())
+    {
         Transaction transaction;
         transaction.date = expenseQuery.value("date").toDate();
         transaction.type = "expense";
@@ -1187,27 +1230,31 @@ void MainWindow::createFinancialReport(const QString& filePath) {
         transactions.append(transaction);
     }
 
-
     // Calculate the total for each income and expense reason
     QMap<QString, double> totals;
     QStringList reasons = {"family", "personal", "food", "rent", "travel", "study", "entertainment", "other"};
-    for (const QString& reason : reasons) {
+    for (const QString &reason : reasons)
+    {
         QSqlQuery query;
         query.prepare(QString("SELECT SUM(amount) FROM %1_in WHERE reason = :reason UNION SELECT SUM(amount) FROM %1_ex WHERE reason = :reason").arg(temp_username));
         query.bindValue(":reason", reason);
-        if (!query.exec()) {
+        if (!query.exec())
+        {
             qDebug() << "Failed to execute query";
             return;
         }
-        if (query.next()) {
+        if (query.next())
+        {
             totals[reason] = query.value(0).toDouble();
         }
     }
 
     double totalIncome = 0.0;
     int numIncomeTransactions = 0;
-    for (Transaction transaction : transactions) {
-        if (transaction.type == "income") {
+    for (Transaction transaction : transactions)
+    {
+        if (transaction.type == "income")
+        {
             totalIncome += transaction.amount;
             numIncomeTransactions++;
         }
@@ -1216,8 +1263,10 @@ void MainWindow::createFinancialReport(const QString& filePath) {
 
     // Calculate the median income
     QList<double> incomes;
-    for (Transaction transaction : transactions) {
-        if (transaction.type == "income") {
+    for (Transaction transaction : transactions)
+    {
+        if (transaction.type == "income")
+        {
             incomes.append(transaction.amount);
         }
     }
@@ -1226,7 +1275,8 @@ void MainWindow::createFinancialReport(const QString& filePath) {
 
     // Calculate the standard deviation of the income
     double sumOfSquares = 0.0;
-    for (double income : incomes) {
+    for (double income : incomes)
+    {
         double deviation = income - averageIncome;
         sumOfSquares += deviation * deviation;
     }
@@ -1237,16 +1287,24 @@ void MainWindow::createFinancialReport(const QString& filePath) {
 
     query.prepare(QString("SELECT SUM(amount) FROM %1_in WHERE date < :startDate").arg(temp_username));
     query.bindValue(":startDate", QDate::currentDate()); // startDate is the start date of the current period
-    if (!query.exec() || !query.next()) {
+    if (!query.exec() || !query.next())
+    {
         qDebug() << "Failed to fetch total income from the previous period";
         return;
     }
     double previousPeriodIncome = query.value(0).toDouble();
 
+    if (previousPeriodIncome == 0)
+    {
+        QMessageBox::critical(this, "", "");
+        return;
+    }
+
     // Calculate the percentage change in income from the previous period
     double percentageChange = (incomeSum - previousPeriodIncome) / previousPeriodIncome * 100.0;
     double allTotals = 0.0;
-    for (double total : totals.values()) {
+    for (double total : totals.values())
+    {
         allTotals += total;
     }
     // Set up the font
@@ -1266,39 +1324,54 @@ void MainWindow::createFinancialReport(const QString& filePath) {
     QString standardDeviationText = QString("Standard deviation of income: %1").arg(standardDeviation);
     painter.drawText(100, 140, standardDeviationText);
 
+    const int TEXT_X = 100;
+    const int TEXT_Y = 160;
+    const int PIE_RADIUS = 100;
+    const int PIE_X = 100;
+    const int PIE_Y_OFFSET = 180;
+    const int ROW_HEIGHT = 20;
+    const int PIE_Y_EXTRA = 50;
+    const int ANGLE_MULTIPLIER = 16;
+    const int RECT_WIDTH = 200;
+    const int RECT_HEIGHT = 20;
+    const int TOTAL_X = 300;
+    const int TOTAL_WIDTH = 100;
+    const int ANALYSIS_Y_EXTRA = 50;
+    const int ANALYSIS_WIDTH = 400;
+    const int ANALYSIS_HEIGHT = 50;
+
     // Draw the percentage change in income from the previous period
     QString percentageChangeText = QString("Percentage change in income from the previous period: %1%").arg(percentageChange);
-    painter.drawText(100, 160, percentageChangeText);
+    painter.drawText(TEXT_X, TEXT_Y, percentageChangeText);
 
     // Draw a pie slice for each category
-    int pieRadius = 100;
-    int pieX = 100;
-    int pieY = 180 + row * 20 + 50;
     double startAngle = 0.0;
-    for (int i = 0; i < totals.size(); ++i) {
+    for (int i = 0; i < totals.size(); ++i)
+    {
         QString category = totals.keys()[i];
         double total = totals[category];
         double sliceAngle = total / allTotals * 360.0;
-        painter.drawPie(pieX, pieY, pieRadius * 2, pieRadius * 2, startAngle * 16, sliceAngle * 16);
+        int pieY = PIE_Y_OFFSET + i * ROW_HEIGHT + PIE_Y_EXTRA;
+        painter.drawPie(PIE_X, pieY, PIE_RADIUS * 2, PIE_RADIUS * 2, startAngle * ANGLE_MULTIPLIER, sliceAngle * ANGLE_MULTIPLIER);
         startAngle += sliceAngle;
     }
-
     // Write each title and total to the PDF
     QFont categoryFont("Arial", 10);
     painter.setFont(categoryFont);
-    row = 0;
-    for (auto it = totals.begin(); it != totals.end(); ++it) {
-        QString title = it.key();
-        double total = it.value();
-        painter.drawText(QRect(100, 180 + row * 20, 200, 20), Qt::AlignLeft, title);
-        painter.drawText(QRect(300, 180 + row * 20, 100, 20), Qt::AlignLeft, QString::number(total));
-        row++;
+    for (int i = 0; i < totals.size(); ++i)
+    {
+        QString title = totals.keys()[i];
+        double total = totals[title];
+        int rowY = PIE_Y_OFFSET + i * ROW_HEIGHT;
+        painter.drawText(QRect(TEXT_X, rowY, RECT_WIDTH, RECT_HEIGHT), Qt::AlignLeft, title);
+        painter.drawText(QRect(TOTAL_X, rowY, TOTAL_WIDTH, RECT_HEIGHT), Qt::AlignLeft, QString::number(total));
     }
 
     // Write the cosine similarity to the PDF
     QFont analysisFont("Arial", 10);
     painter.setFont(analysisFont);
-    painter.drawText(QRect(100, 180 + row * 20 + 50, 400, 50), Qt::AlignLeft,
+    int analysisY = PIE_Y_OFFSET + totals.size() * ROW_HEIGHT + ANALYSIS_Y_EXTRA;
+    painter.drawText(QRect(TEXT_X, analysisY, ANALYSIS_WIDTH, ANALYSIS_HEIGHT), Qt::AlignLeft,
                      "Cosine Similarity between Income and Expense: " + QString::number(cosineSimilarity));
     // End painting and close the PDF
     painter.end();

@@ -67,6 +67,13 @@ void LineGraph::on_view_btn_clicked()
         income_or_expense = temp_username + "_ex";
         income_or_expense_ = "expense";
     }
+    else if(ui->select_all_btn->isChecked()){
+
+    }
+    else {
+        QMessageBox::critical(this,"ERROR","Please select any of these");
+        return;
+    }
 
     // to get number of days according to the selected month
     int month_number = ui->select_month_menu->currentIndex() + 1; // to get month no.

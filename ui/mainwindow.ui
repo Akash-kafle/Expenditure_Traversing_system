@@ -31,7 +31,7 @@
    <string>e-Ledger</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset>
     <normaloff>:/img/img/ledger_small.png</normaloff>:/img/img/ledger_small.png</iconset>
   </property>
   <property name="styleSheet">
@@ -792,6 +792,37 @@ background-color: transparent;</string>
       <string/>
      </property>
     </widget>
+    <widget class="QPushButton" name="show_graph_btn_2">
+     <property name="geometry">
+      <rect>
+       <x>630</x>
+       <y>20</y>
+       <width>101</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Lato</family>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="toolTip">
+      <string>Click here to have a quick look with graphs.</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>report</string>
+     </property>
+     <property name="shortcut">
+      <string>Ctrl+G</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QFrame" name="frame_3">
     <property name="geometry">
@@ -1133,8 +1164,6 @@ QScrollBar::sub-line:vertical {
   <tabstop>show_graph_btn</tabstop>
   <tabstop>signout_button</tabstop>
  </tabstops>
- <resources>
-  <include location="resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
