@@ -32,7 +32,7 @@
    <string>e-Ledger</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources.qrc">
+   <iconset>
     <normaloff>:/img/img/ledger_small.png</normaloff>:/img/img/ledger_small.png</iconset>
   </property>
   <property name="styleSheet">
@@ -272,8 +272,6 @@ font-size: 18px;</string>
   <tabstop>select_all_btn</tabstop>
   <tabstop>view_btn</tabstop>
  </tabstops>
- <resources>
-  <include location="../resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -8,6 +8,7 @@
 //#include <QFile>
 #include <QFileInfo>
 #include "linegraph.h"
+#include "ui_linegraph.h"
 #include "QFileInfo"
 #include "QStringList"
 
@@ -64,9 +65,9 @@ QString temp_username;
 
     void view_export(int ve); //ve = view, export; ve gets either 0 or 1
 
-    void sort_view_export(int sve); //sve = sort, view, export; svs gets either 0 or 1
+    //void sort_view_export(int sve); //sve = sort, view, export; svs gets either 0 or 1
 
-    void filter_view_export(int fve); //fve = filter, view, export; fvs gets either 0 or 1
+    //void filter_view_export(int fve); //fve = filter, view, export; fvs gets either 0 or 1
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -81,7 +82,7 @@ private slots:
 
     void on_view_button_clicked();
 
-    void on_export_csv_btn_clicked();
+    //void on_export_csv_btn_clicked();
 
     //void on_calculate_net_amount_btn_clicked();
 
@@ -109,7 +110,11 @@ private slots:
 
     void on_buyer_or_seller_drop_menu_currentIndexChanged(int index);
     void on_show_graph_btn_2_clicked();
-    void createFinancialReport(const QString& filePath);
+    void createFinancialReport( QString& filePath);
+    QMap<QString, double> calculateCategoryTotals(const QString& temp_username, const QStringList& reasons, const QString& tablePrefix);
+    double calculateCosineSimilarity(const QMap<QString, double>& vector1, const QMap<QString, double>& vector2);
+    double calculateMagnitude(const QMap<QString, double>& vector);
+    double calculateDotProduct(const QMap<QString, double>& vector1, const QMap<QString, double>& vector2);
 
 private:
 

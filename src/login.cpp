@@ -34,9 +34,14 @@ Login::Login(QWidget *parent)
 Login::~Login()
 {
     delete ui;
+    ui = nullptr;
     delete registerWindow;
+    registerWindow = nullptr;
+
     delete showMainWindow;
+    showMainWindow = nullptr;
     delete forgot_password;
+    forgot_password = nullptr;
 }
 
 void Login::set_icons(){
@@ -67,8 +72,8 @@ void Login::on_createAccount_clicked()
 void Login::on_loginButton_clicked()
 {
     //if given username and password is correct then execute the following;
-    QString username = ui->loginUsernameInput->text();
-    QString password = ui->loginPasswordInput->text();
+    QString username = "aakash";// ui->loginUsernameInput->text();
+    QString password = "a@12345678";//ui->loginPasswordInput->text();
 
     if(!db_conn_open()){
         qDebug() << "Database connection failed.";

@@ -792,37 +792,6 @@ background-color: transparent;</string>
       <string/>
      </property>
     </widget>
-    <widget class="QPushButton" name="show_graph_btn_2">
-     <property name="geometry">
-      <rect>
-       <x>630</x>
-       <y>20</y>
-       <width>101</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Lato</family>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="toolTip">
-      <string>Click here to have a quick look with graphs.</string>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string>report</string>
-     </property>
-     <property name="shortcut">
-      <string>Ctrl+G</string>
-     </property>
-    </widget>
    </widget>
    <widget class="QFrame" name="frame_3">
     <property name="geometry">
@@ -943,38 +912,6 @@ QScrollBar::sub-line:vertical {
      </property>
      <property name="styleSheet">
       <string notr="true"/>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="export_csv_btn">
-     <property name="geometry">
-      <rect>
-       <x>897</x>
-       <y>30</y>
-       <width>106</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Lato</family>
-       <pointsize>-1</pointsize>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="toolTip">
-      <string>Exports records as a CSV file to the desktop.</string>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string>  Export</string>
-     </property>
-     <property name="shortcut">
-      <string>Ctrl+E</string>
      </property>
     </widget>
     <widget class="QComboBox" name="filter_condn_drop_menu">
@@ -1135,6 +1072,37 @@ QScrollBar::sub-line:vertical {
       </rect>
      </property>
     </widget>
+    <widget class="QPushButton" name="show_graph_btn_2">
+     <property name="geometry">
+      <rect>
+       <x>910</x>
+       <y>30</y>
+       <width>101</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Lato</family>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="toolTip">
+      <string>Click here to have a quick look with graphs.</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>report</string>
+     </property>
+     <property name="shortcut">
+      <string>Ctrl+G</string>
+     </property>
+    </widget>
    </widget>
    <zorder>frame_3</zorder>
    <zorder>frame_2</zorder>
@@ -1159,7 +1127,6 @@ QScrollBar::sub-line:vertical {
   <tabstop>filter_by_drop_menu</tabstop>
   <tabstop>filter_condn_drop_menu</tabstop>
   <tabstop>view_button</tabstop>
-  <tabstop>export_csv_btn</tabstop>
   <tabstop>display_area</tabstop>
   <tabstop>show_graph_btn</tabstop>
   <tabstop>signout_button</tabstop>

@@ -43,9 +43,11 @@ public:
         }
     }
 
-    void get_min_max_value_in_vector(double &min_value, double &max_value, QVector<double> &amount_sums);
+   void get_min_max_value_in_vector(double &min_value, double &max_value, QVector<double> &amount_sums);
     void get_max_num_of_transaction(double &max_transaction_num, QVector<double> &num_of_transactions_list);
-//    void get_min_max_for_y_axis(double &value_1, double &value_2, double &value_3, double &min_value, double &max_value);
+    //void plot();
+    QVector<double> repeatOrExtend(const QVector<double> &originalData, int targetSize);
+ void get_min_max_for_y_axis(double &value_1, double &value_2, double &value_3, double &min_value, double &max_value);
 
 public:
     explicit LineGraph(QWidget *parent = nullptr);

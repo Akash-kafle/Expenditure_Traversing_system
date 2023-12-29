@@ -12,7 +12,7 @@ void createFinancialReport(QString);
 void paintPieChart(QPainter *painter, const QRectF &rect, const QList<double> &data);
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(), // parent was passed here
-                                          ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
@@ -155,8 +155,8 @@ void MainWindow::set_icons()
 
     QPixmap csv_pixmap(":/img/img/csv.png");
     QIcon csv_icon(csv_pixmap);
-    ui->export_csv_btn->setIcon(csv_icon);
-    ui->export_csv_btn->setIconSize(QSize(24, 24));
+    //ui->export_csv_btn->setIcon(csv_icon);
+    // ui->export_csv_btn->setIconSize(QSize(24, 24));
 
     QPixmap sort_pixmap(":/img/img/sort.png");
     QIcon sort_icon(sort_pixmap);
@@ -283,7 +283,7 @@ void MainWindow::on_save_button_clicked()
             if ("UNIQUE constraint failed: " + with_income_or_expense + ".Transaction ID Unable to fetch row" == save_query.lastError().text())
                 QMessageBox::warning(this, "Same Transaction ID", "Oops, you have a record with same Transaction ID. Try a different one.");
             else
-                QMessageBox::warning(this, "Error encountered", save_query.lastError().text());
+                // QMessageBox::warning(this, "Error encountered", save_query.lastError().text());
                 qDebug() << save_query.lastError().text();
 
             db_conn_close();
@@ -358,7 +358,7 @@ void MainWindow::on_update_button_clicked()
             }
 
             QSqlQuery check_transaction_id_qry;
-            check_transaction_id_qry.prepare("SELECT * from " + income_or_expense + " WHERE `Transaction ID` = " + id);
+            check_transaction_id_qry.prepare("SELECT * from " + income_or_expense + " WHERE `id` = " + id);
 
             int transaction_id_count = 0;
             if (check_transaction_id_qry.exec())
@@ -374,9 +374,9 @@ void MainWindow::on_update_button_clicked()
                 QSqlQuery update_qry;
 
                 if (ui->select_income_btn->isChecked())
-                    update_qry.prepare("UPDATE " + income_or_expense + " SET Date = '" + date + "reason = '" + reason + "' WHERE `Transaction ID` = " + id);
+                    update_qry.prepare("UPDATE " + income_or_expense + " SET `id`= `"+id+"` date = '" + date + "' reason = '" + reason +"' amount = `"+amount+"` WHERE `id` = `" + id+"`");
                 else if (ui->select_expense_btn->isChecked())
-                    update_qry.prepare("UPDATE " + income_or_expense + " SET Date = '" + date + "reason = '" + reason + "' WHERE `Transaction ID` = " + id);
+                    update_qry.prepare("UPDATE " + income_or_expense + " SET `id`=`"+id+"` date = '" + date + "' reason = '" + reason + "' amount = `"+amount+"` WHERE `id` = `" + id+"`");
                 if (update_qry.exec())
                 {
                     QMessageBox::information(this, tr(" "), tr("Record has been updated successfully."));
@@ -453,9 +453,9 @@ void MainWindow::on_delete_button_clicked()
                 QSqlQuery delete_qry;
 
                 if (ui->select_expense_btn->isChecked())
-                    delete_qry.prepare("DELETE FROM " + temp_username + "_ex WHERE `Transaction ID` = " + id);
+                    delete_qry.prepare("DELETE FROM " + temp_username + "_ex WHERE `id` = " + id);
                 else if (ui->select_income_btn->isChecked())
-                    delete_qry.prepare("DELETE FROM " + temp_username + "_in WHERE `Transaction ID` = " + id);
+                    delete_qry.prepare("DELETE FROM " + temp_username + "_in WHERE `id` = " + id);
 
                 if (delete_qry.exec())
                 {
@@ -488,30 +488,7 @@ void MainWindow::on_delete_button_clicked()
 
 void MainWindow::on_view_button_clicked()
 {
-    if (ui->no_sort_filter_btn->isChecked())
-        view_export(0);
 
-    else if (ui->apply_sort_btn->isChecked())
-        sort_view_export(0);
-
-    else if (ui->apply_filter_btn->isChecked())
-        filter_view_export(0);
-}
-
-void MainWindow::on_export_csv_btn_clicked()
-{
-    if (ui->no_sort_filter_btn->isChecked())
-        view_export(1);
-
-    else if (ui->apply_sort_btn->isChecked())
-        sort_view_export(1);
-
-    else if (ui->apply_filter_btn->isChecked())
-        filter_view_export(1);
-}
-
-void MainWindow::view_export(int ve)
-{
     QSqlQueryModel *model = new QSqlQueryModel();
 
     db_conn_open();
@@ -532,80 +509,11 @@ void MainWindow::view_export(int ve)
     qry->prepare("SELECT * FROM " + income_or_expense);
 
     qry->exec();
-
     model->setQuery(*qry);
-    if (ve == 0)
-    {
-        ui->display_area->setModel(model);
-        db_conn_close();
-    }
-    else if (ve == 1)
-    {
 
-        int table_row_num = model->rowCount();    // returns no. of row in a table
-        int table_col_num = model->columnCount(); // returns no. of column in a table
 
-        QString textData;
-        QString file_name;
-
-        if (!income_or_expense_index)
-        { // for buyer
-            textData = "User:," + temp_username + "\nRecords of:, income\nTransaction ID, Date, reason , amount \n";
-            file_name = temp_username + "_income.csv";
-            int i = 0;
-            while (QFileInfo::exists("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/ETS/ETS/ETS/export/" + file_name))
-            {
-                ++i;
-                file_name = temp_username + i + "_income.csv";
-            }
-        }
-        else if (income_or_expense_index)
-        { // for buyer
-            textData = "User:," + temp_username + "\nRecords of:, expense\nTransaction ID, Date, reason , amount\n";
-            file_name = temp_username + "_expense.csv";
-            int i = 0;
-            while (QFileInfo::exists("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/export/" + file_name))
-            {
-                ++i;
-                file_name = temp_username + i + "_income.csv";
-            }
-        }
-
-        for (int i = 0; i < table_row_num; i++)
-        {
-            for (int j = 0; j < table_col_num; j++)
-            {
-                textData += model->data(model->index(i, j)).toString();
-                textData += ", "; // for .csv file format
-            }
-            textData += "\n";
-        }
-
-        // to create .csv file
-        QFile csvFile("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/export/" + file_name); // change path; can be made dynamic
-        QString csv_path = QDir(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)).filePath(file_name);
-        qDebug() << csv_path;
-        // QFile csvFile(csv_path);
-
-        if (csvFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
-        {
-
-            QTextStream out(&csvFile);
-            out << textData;
-
-            csvFile.flush();
-            csvFile.close();
-
-            db_conn_close();
-
-            QMessageBox::information(this, " ", "Records have been exported as a csv file.");
-        }
-        else
-        {
-            qDebug() << "Could not export the records as a csv file.";
-            db_conn_close();
-        }
-    }
+    ui->display_area->setModel(model);
+    db_conn_close();
 }
 
 void MainWindow::on_sort_by_drop_menu_currentIndexChanged(int index)
@@ -628,98 +536,6 @@ void MainWindow::on_sort_by_drop_menu_currentIndexChanged(int index)
         ui->order_by_drop_menu->clear();
         ui->order_by_drop_menu->addItem("Recent last");
         ui->order_by_drop_menu->addItem("Recent first");
-    }
-}
-
-void MainWindow::sort_view_export(int sve)
-{
-    QString sort_by_opt = ui->sort_by_drop_menu->currentText();
-    int order_opt_index = ui->order_by_drop_menu->currentIndex();
-
-    QSqlQueryModel *model = new QSqlQueryModel();
-
-    db_conn_open();
-    QSqlQuery *qry = new QSqlQuery(main_db);
-
-    int income_or_expense_index = ui->buyer_or_seller_drop_menu->currentIndex();
-    QString income_or_expense;
-
-    if (!income_or_expense_index) // for buyer
-        income_or_expense = temp_username + "_b";
-    else if (income_or_expense_index) // for seller
-        income_or_expense = temp_username + "_s";
-
-    if (order_opt_index == 0)
-    {
-        qry->prepare("SELECT * FROM " + income_or_expense + " ORDER BY `" + sort_by_opt + "` ASC");
-    }
-    else if (order_opt_index == 1)
-    {
-        qry->prepare("SELECT * FROM " + income_or_expense + " ORDER BY `" + sort_by_opt + "` DESC");
-    }
-
-    qry->exec();
-    model->setQuery(*qry);
-
-    if (sve == 0)
-    {
-        ui->display_area->setModel(model);
-        db_conn_close();
-    }
-    else if (sve == 1)
-    {
-
-        int table_row_num = model->rowCount();    // returns no. of row in a table
-        int table_col_num = model->columnCount(); // returns no. of column in a table
-
-        QString textData;
-        QString file_name;
-
-        if (!income_or_expense_index)
-        { // for income
-            textData = "User:," + temp_username + "\nRecords of:, income\nTransaction ID, Date, reason , amount\n";
-            file_name = temp_username + "_income_sorted.csv";
-        }
-        else if (income_or_expense_index)
-        { // for expense
-            textData = "User:," + temp_username + "\nRecords of:, expense\nTransaction ID, Date, reason , amount\n";
-            file_name = temp_username + "_expense_sorted.csv";
-        }
-
-        for (int i = 0; i < table_row_num; i++)
-        {
-            for (int j = 0; j < table_col_num; j++)
-            {
-                textData += model->data(model->index(i, j)).toString();
-                textData += ", "; // for .csv file format
-            }
-            textData += "\n";
-        }
-
-        // to create .csv file
-        QFile csvFile("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/export/" + temp_username + "_sorted.csv"); // change path; can be made dynamic
-        QString csv_path = QDir(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)).filePath(file_name);
-        qDebug() << csv_path;
-        // QFile csvFile(csv_path);
-
-        if (csvFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
-        {
-
-            QTextStream out(&csvFile);
-            out << textData;
-
-            csvFile.flush();
-            csvFile.close();
-
-            db_conn_close();
-
-            QMessageBox::information(this, " ", "Records have exported as a csv file.");
-        }
-        else
-        {
-            qDebug() << "Could not export the records as a csv file.";
-            db_conn_close();
-        }
     }
 }
 
@@ -763,145 +579,6 @@ void MainWindow::on_filter_by_drop_menu_currentIndexChanged(int index)
         ui->filter_condn_drop_menu->clear();
         ui->filter_condn_drop_menu->addItem("income");
         ui->filter_condn_drop_menu->addItem("expense");
-    }
-}
-
-void MainWindow::filter_view_export(int fve)
-{
-
-    QString filter_by_opt_text = ui->filter_by_drop_menu->currentText();
-    int filter_by_opt_index = ui->filter_by_drop_menu->currentIndex();
-    int filter_condn_index = ui->filter_condn_drop_menu->currentIndex();
-
-    int income_or_expense_index = ui->buyer_or_seller_drop_menu->currentIndex();
-    QString income_or_expense;
-
-    if (!income_or_expense_index) // for income
-        income_or_expense = temp_username + "_in";
-    else if (income_or_expense_index) // for seller
-        income_or_expense = temp_username + "_s";
-
-    QSqlQueryModel *model = new QSqlQueryModel();
-
-    db_conn_open();
-    QSqlQuery *filter_qry = new QSqlQuery(main_db);
-
-    if (filter_by_opt_index == 6 && filter_condn_index == 0)
-    {
-        filter_qry->prepare("SELECT * FROM " + income_or_expense + " WHERE `" + filter_by_opt_text + "` <0");
-    }
-
-    else
-    {
-        if (filter_by_opt_index == 0)
-        {
-            QString str = ui->filter_condn_drop_menu->currentText();
-            // QString str = QStringLiteral("100-200");
-
-            QStringList list = str.split(QLatin1Char('-')); // splitting string into two parts separated by - , list =  [ "[from]", "[to]"]
-            // list[0] gives value before - and list[1] gives value after -
-
-            filter_qry->prepare("SELECT * FROM " + income_or_expense + " WHERE `" + filter_by_opt_text + "` >=" + list[0] + " AND `" + filter_by_opt_text + "` <" + list[1]);
-        }
-        else if (filter_by_opt_index == 1)
-        {
-            int month_number = ui->filter_condn_drop_menu->currentIndex() + 1;
-            if (month_number < 10)
-            {
-                QString month = QString::number(month_number);
-                filter_qry->prepare("SELECT * FROM " + income_or_expense + " WHERE Date LIKE '____-0" + month + "-__'"); // example, %01%, %02%, ..., %09%
-            }                                                                                                            // Date has been restricted to be in other form
-            else
-            {
-                QString month = QString::number(month_number - 10);                                                      // if selected index + 1 >= 10 then month will be 10 - 10, 11 - 10, 12 - 10 respectively
-                filter_qry->prepare("SELECT * FROM " + income_or_expense + " WHERE Date LIKE '____-1" + month + "-__'"); // example, %10%, %11%, %12%
-            }
-        }
-        else if (filter_by_opt_index == 2 || filter_by_opt_index == 3)
-        {
-            QString wildcards[5] = {"\'[a-eA-E]*\'", "\'[f-jF-J]*\'", "\'[k-oK-O]*\'", "\'[p-tP-T]*\'", "\'[u-zU-Z]*\'"};
-            filter_qry->prepare("SELECT * FROM " + income_or_expense + " WHERE `" + filter_by_opt_text + "` GLOB " + wildcards[filter_condn_index]);
-        }
-        else if (filter_by_opt_index == 4 || filter_by_opt_index == 5 || filter_by_opt_index == 6)
-        {
-            QString str = ui->filter_condn_drop_menu->currentText();
-            // QString str = QStringLiteral("100-200");
-
-            QStringList list = str.split(QLatin1Char('-')); // splitting string into two parts separated by - , list =  [ "[from]", "[to]"]
-            // list[0] gives value before - and list[1] gives value after -
-            int value_from = (list[0]).toInt();
-            if (value_from < 100000)
-            {
-                filter_qry->prepare("SELECT * FROM " + income_or_expense + " WHERE `" + filter_by_opt_text + "` >=" + list[0] + " AND `" + filter_by_opt_text + "` <" + list[1]);
-            }
-            else
-            {
-                filter_qry->prepare("SELECT * FROM " + income_or_expense + " WHERE `" + filter_by_opt_text + "` >=" + list[0]);
-            }
-        }
-    }
-
-    filter_qry->exec();
-    model->setQuery(*filter_qry);
-
-    if (fve == 0)
-    {
-        ui->display_area->setModel(model);
-        db_conn_close();
-    }
-    else if (fve == 1)
-    {
-        int table_row_num = model->rowCount();    // returns no. of row in a table
-        int table_col_num = model->columnCount(); // returns no. of column in a table
-
-        QString textData;
-        QString file_name;
-
-        if (!income_or_expense_index)
-        { // for income
-            textData = "User:," + temp_username + "\nRecords of:, income\nTransaction ID, Date, reason , amount\n";
-            file_name = temp_username + "_income_filtered.csv";
-        }
-        else if (income_or_expense_index)
-        { // for expense
-            textData = "User:," + temp_username + "\nRecords of:, expense\nTransaction ID, Date, reason , amount\n";
-            file_name = temp_username + "_expense_filtered.csv";
-        }
-
-        for (int i = 0; i < table_row_num; i++)
-        {
-            for (int j = 0; j < table_col_num; j++)
-            {
-                textData += model->data(model->index(i, j)).toString();
-                textData += ", "; // for .csv file format
-            }
-            textData += "\n";
-        }
-
-        // to create .csv file
-        QFile csvFile("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/export/" + temp_username + "_filtered.csv"); // change path; can be made dynamic
-        QString csv_path = QDir(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)).filePath(file_name);
-        qDebug() << csv_path;
-        // QFile csvFile(csv_path);
-
-        if (csvFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
-        {
-
-            QTextStream out(&csvFile);
-            out << textData;
-
-            csvFile.flush();
-            csvFile.close();
-
-            db_conn_close();
-
-            QMessageBox::information(this, " ", "Records have been exported as a csv file.");
-        }
-        else
-        {
-            qDebug() << "Could not export the records as a csv file.";
-            db_conn_close();
-        }
     }
 }
 
@@ -1120,7 +797,7 @@ void MainWindow::on_show_graph_btn_2_clicked()
              ++i;
              //filePath = "C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/export/"+temp_username+"_report_("+i+").ppt";
          }*/
-        QString filePath = QFileDialog::getSaveFileName(this, "Save PDF", "", "*.pdf");
+        QString filePath{};
         createFinancialReport(filePath);
     }
     else
@@ -1134,24 +811,24 @@ void MainWindow::on_show_graph_btn_2_clicked()
     clicker++;
 }
 
-void MainWindow::createFinancialReport(const QString &filePath)
+void MainWindow::createFinancialReport( QString &filePath)
 {
+
     QList<Transaction> transactions;
     QSqlQuery query;
     // Open the SQLite database
-    QSqlDatabase database = QSqlDatabase::addDatabase("QSQLITE");
-    database.setDatabaseName("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/main/main.db");
-    MainWindow w;
-    if (!database.open())
+    db_conn_open();
+    if (!main_db.open())
     {
         qDebug() << "Failed to open database";
         return;
     }
+    qDebug()<< QSqlDatabase::drivers();
+    filePath = QFileDialog::getSaveFileName(this, "Save PDF", "", "*.pdf");
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
     {
         qDebug() << "Cannot open file for reading: " << qPrintable(file.errorString());
-        return;
     }
 
     // Create a PDF writer
@@ -1166,14 +843,14 @@ void MainWindow::createFinancialReport(const QString &filePath)
     // Set up the report header
     QFont headerFont("Arial", 14, QFont::Bold);
     painter.setFont(headerFont);
-    painter.drawText(QRect(100, 100, 400, 50), Qt::AlignLeft, "Financial Report");
+    painter.drawText(QRect(5000, 1000, 4000, 500), Qt::AlignLeft, "Financial Report");
 
     // Set up the table headers
     QFont tableHeaderFont("Arial", 12, QFont::Bold);
     painter.setFont(tableHeaderFont);
-    painter.drawText(QRect(100, 150, 100, 30), Qt::AlignLeft, "Date");
-    painter.drawText(QRect(200, 150, 100, 30), Qt::AlignLeft, "Type");
-    painter.drawText(QRect(300, 150, 100, 30), Qt::AlignLeft, "Amount");
+    painter.drawText(QRect(5000, 1500, 1000, 300), Qt::AlignLeft, "Date");
+    painter.drawText(QRect(5000, 1500, 1000, 300), Qt::AlignLeft, "Type");
+    painter.drawText(QRect(5000, 1500, 1000, 300), Qt::AlignLeft, "Amount");
 
     // Set up the table rows
     QFont tableRowFont("Arial", 10);
@@ -1182,12 +859,12 @@ void MainWindow::createFinancialReport(const QString &filePath)
     while (query.next())
     {
         QString date = query.value("date").toString();
-        QString type = query.value("type").toString();
+        QString type = query.value("reason").toString();
         double amount = query.value("amount").toDouble();
 
-        painter.drawText(QRect(100, 180 + row * 20, 100, 20), Qt::AlignLeft, date);
-        painter.drawText(QRect(200, 180 + row * 20, 100, 20), Qt::AlignLeft, type);
-        painter.drawText(QRect(300, 180 + row * 20, 100, 20), Qt::AlignLeft, QString::number(amount));
+        painter.drawText(QRect(3000, 1800 + row * 100, 1000, 200), Qt::AlignLeft, date);
+        painter.drawText(QRect(3000, 1800 + row * 100, 1000, 200), Qt::AlignLeft, type);
+        painter.drawText(QRect(3000, 1800 + row * 100, 1000, 200), Qt::AlignLeft, QString::number(amount));
 
         row++;
     }
@@ -1232,22 +909,6 @@ void MainWindow::createFinancialReport(const QString &filePath)
 
     // Calculate the total for each income and expense reason
     QMap<QString, double> totals;
-    QStringList reasons = {"family", "personal", "food", "rent", "travel", "study", "entertainment", "other"};
-    for (const QString &reason : reasons)
-    {
-        QSqlQuery query;
-        query.prepare(QString("SELECT SUM(amount) FROM %1_in WHERE reason = :reason UNION SELECT SUM(amount) FROM %1_ex WHERE reason = :reason").arg(temp_username));
-        query.bindValue(":reason", reason);
-        if (!query.exec())
-        {
-            qDebug() << "Failed to execute query";
-            return;
-        }
-        if (query.next())
-        {
-            totals[reason] = query.value(0).toDouble();
-        }
-    }
 
     double totalIncome = 0.0;
     int numIncomeTransactions = 0;
@@ -1260,6 +921,36 @@ void MainWindow::createFinancialReport(const QString &filePath)
         }
     }
     double averageIncome = totalIncome / numIncomeTransactions;
+    // Calculate totals for income and expense categories
+    QStringList reasons = {"family", "personal", "food", "rent", "travel", "study", "entertainment", "other"};
+    QMap<QString, double> incomeTotals = calculateCategoryTotals(temp_username, reasons, "in");
+    QMap<QString, double> expenseTotals = calculateCategoryTotals(temp_username, reasons, "ex");
+
+    // Calculate cosine similarity between income and expense vectors
+    cosineSimilarity = calculateCosineSimilarity(incomeTotals, expenseTotals);
+
+    // Write the cosine similarity to the PDF
+    const int TEXT_X = 2000;
+    const int TEXT_Y = 5600;
+    const int PIE_RADIUS = 100;
+    const int PIE_X = 5000;
+    const int PIE_Y_OFFSET = 5800;
+    const int ROW_HEIGHT = 5000;
+    const int PIE_Y_EXTRA = 5000;
+    const int ANGLE_MULTIPLIER = 1600;
+    const int RECT_WIDTH = 1000;
+    const int RECT_HEIGHT = 1000;
+    const int TOTAL_X = 500;
+    const int TOTAL_WIDTH = 1000;
+    const int ANALYSIS_Y_EXTRA = 5000;
+    const int ANALYSIS_WIDTH = 2000;
+    const int ANALYSIS_HEIGHT = 2000;
+    QFont analysisFont("Arial", 10);
+    painter.setFont(analysisFont);
+    int analysisY = PIE_Y_OFFSET + totals.size() * ROW_HEIGHT + ANALYSIS_Y_EXTRA;
+    painter.drawText(QRect(TEXT_X, analysisY, ANALYSIS_WIDTH, ANALYSIS_HEIGHT), Qt::AlignLeft,
+                     "Cosine Similarity between Income and Expense: " + QString::number(cosineSimilarity));
+
 
     // Calculate the median income
     QList<double> incomes;
@@ -1290,18 +981,15 @@ void MainWindow::createFinancialReport(const QString &filePath)
     if (!query.exec() || !query.next())
     {
         qDebug() << "Failed to fetch total income from the previous period";
-        return;
+        if(QMessageBox::question(this,"Confirm","Previous period income not found would you like to continue")==QMessageBox::No){
+            return;}
     }
     double previousPeriodIncome = query.value(0).toDouble();
-
-    if (previousPeriodIncome == 0)
-    {
-        QMessageBox::critical(this, "", "");
-        return;
-    }
-
+    double percentageChange;
     // Calculate the percentage change in income from the previous period
-    double percentageChange = (incomeSum - previousPeriodIncome) / previousPeriodIncome * 100.0;
+    if(previousPeriodIncome!=0){
+        double percentageChange = (incomeSum - previousPeriodIncome) / previousPeriodIncome * 100.0;
+    }
     double allTotals = 0.0;
     for (double total : totals.values())
     {
@@ -1314,31 +1002,17 @@ void MainWindow::createFinancialReport(const QString &filePath)
 
     // Draw the average income
     QString averageIncomeText = QString("Average income: %1").arg(averageIncome);
-    painter.drawText(100, 100, averageIncomeText);
+    painter.drawText(5000, 1000, averageIncomeText);
 
     // Draw the median income
     QString medianIncomeText = QString("Median income: %1").arg(medianIncome);
-    painter.drawText(100, 120, medianIncomeText);
+    painter.drawText(5000, 1200, medianIncomeText);
 
     // Draw the standard deviation of the income
     QString standardDeviationText = QString("Standard deviation of income: %1").arg(standardDeviation);
-    painter.drawText(100, 140, standardDeviationText);
+    painter.drawText(5000, 1400, standardDeviationText);
 
-    const int TEXT_X = 100;
-    const int TEXT_Y = 160;
-    const int PIE_RADIUS = 100;
-    const int PIE_X = 100;
-    const int PIE_Y_OFFSET = 180;
-    const int ROW_HEIGHT = 20;
-    const int PIE_Y_EXTRA = 50;
-    const int ANGLE_MULTIPLIER = 16;
-    const int RECT_WIDTH = 200;
-    const int RECT_HEIGHT = 20;
-    const int TOTAL_X = 300;
-    const int TOTAL_WIDTH = 100;
-    const int ANALYSIS_Y_EXTRA = 50;
-    const int ANALYSIS_WIDTH = 400;
-    const int ANALYSIS_HEIGHT = 50;
+
 
     // Draw the percentage change in income from the previous period
     QString percentageChangeText = QString("Percentage change in income from the previous period: %1%").arg(percentageChange);
@@ -1368,13 +1042,67 @@ void MainWindow::createFinancialReport(const QString &filePath)
     }
 
     // Write the cosine similarity to the PDF
-    QFont analysisFont("Arial", 10);
     painter.setFont(analysisFont);
-    int analysisY = PIE_Y_OFFSET + totals.size() * ROW_HEIGHT + ANALYSIS_Y_EXTRA;
+    analysisY = PIE_Y_OFFSET + totals.size() * ROW_HEIGHT + ANALYSIS_Y_EXTRA;
     painter.drawText(QRect(TEXT_X, analysisY, ANALYSIS_WIDTH, ANALYSIS_HEIGHT), Qt::AlignLeft,
                      "Cosine Similarity between Income and Expense: " + QString::number(cosineSimilarity));
     // End painting and close the PDF
     painter.end();
-    database.close();
+    db_conn_close();
     file.close();
+}
+
+QMap<QString, double> MainWindow::calculateCategoryTotals(const QString& temp_username, const QStringList& reasons, const QString& tablePrefix) {
+    QMap<QString, double> totals;
+
+    for (const QString& reason : reasons) {
+        QSqlQuery query;
+        query.prepare(QString("SELECT SUM(amount) FROM %1_%2 WHERE reason = :reason").arg(temp_username, tablePrefix));
+        query.bindValue(":reason", reason);
+
+        if (!query.exec()) {
+            qDebug() << "Failed to execute query";
+            // Handle the error as needed
+            return QMap<QString, double>();
+        }
+
+        if (query.next()) {
+            totals[reason] = query.value(0).toDouble();
+        }
+    }
+
+    return totals;
+}
+
+double MainWindow::calculateCosineSimilarity(const QMap<QString, double>& vector1, const QMap<QString, double>& vector2) {
+    double dotProduct = calculateDotProduct(vector1, vector2);
+    double magnitude1 = calculateMagnitude(vector1);
+    double magnitude2 = calculateMagnitude(vector2);
+
+    // Avoid division by zero
+    if (magnitude1 == 0 || magnitude2 == 0) {
+        return 0.0;
+    }
+
+    return dotProduct / (magnitude1 * magnitude2);
+}
+
+double MainWindow::calculateMagnitude(const QMap<QString, double>& vector) {
+    double sumOfSquares = 0.0;
+
+    for (auto it = vector.constBegin(); it != vector.constEnd(); ++it) {
+        sumOfSquares += it.value() * it.value();
+    }
+
+    return std::sqrt(sumOfSquares);
+}
+
+double MainWindow::calculateDotProduct(const QMap<QString, double>& vector1, const QMap<QString, double>& vector2) {
+    double dotProduct = 0.0;
+
+    for (auto it1 = vector1.constBegin(), it2 = vector2.constBegin(); it1 != vector1.constEnd() && it2 != vector2.constEnd(); ++it1, ++it2) {
+        dotProduct += it1.value() * it2.value();
+    }
+
+    return dotProduct;
 }
