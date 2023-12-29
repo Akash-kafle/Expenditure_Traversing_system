@@ -30,7 +30,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-QString temp_username;
+ static QString temp_username;
     QSqlDatabase main_db;
     QStringList list_income{},list_expense{};
 
@@ -41,7 +41,7 @@ QString temp_username;
 
     bool db_conn_open(){
         main_db = QSqlDatabase::addDatabase("QSQLITE");
-        main_db.setDatabaseName("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/main/main.db");//change path for your system
+        main_db.setDatabaseName("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/Expenditure_Traversing_system/main/main.db");//change path for your system
 
         QString db_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("main.db");
         qDebug() << db_path;

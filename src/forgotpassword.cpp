@@ -127,7 +127,7 @@ void ForgotPassword::on_reset_button_clicked()
                     db_conn_close();
 
                     //QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("temp.txt");
-                    QString temp_file_path = "C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/main/temp.txt";
+                    QString temp_file_path = "C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/Expenditure_Traversing_system/main/temp.txt";
                     //qDebug() << temp_file_path;
                     QFile file(temp_file_path);
 

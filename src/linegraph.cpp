@@ -1,4 +1,4 @@
-#include "linegraph.h"
+#include "header/linegraph.h"
 #include "ui_linegraph.h"
 //#include <algorithm>
 
@@ -8,13 +8,12 @@ LineGraph::LineGraph(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QString temp_file_path = "C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/main/text.txt";
+    QString temp_file_path = "C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/Expenditure_Traversing_system/main/temp.txt";
     qDebug() << temp_file_path;
     QFile file(temp_file_path);
 
     if (!file.open(QFile::ReadOnly | QFile::Text)){
         qDebug() << "File not opened";
-        return;
     } else {
         QTextStream in(&file);
         temp_username = in.readAll(); //temp_username has been declared in mainwindow.h
@@ -56,11 +55,11 @@ void LineGraph::on_view_btn_clicked()
     QString income_or_expense;
     const bool income_{ui->select_income_btn->isChecked()},expense_{ui->select_expense_btn->isChecked()};
     if (income_){
-        income_or_expense = temp_username + "_in";
+        income_or_expense = MainWindow::temp_username + "_in";
 
     }
     else if (ui->select_expense_btn->isChecked()){
-        income_or_expense = temp_username + "_ex";
+        income_or_expense = MainWindow::temp_username + "_ex";
 
     }
     else if (!ui->select_all_btn->isChecked()){
@@ -125,13 +124,15 @@ void LineGraph::on_view_btn_clicked()
 
                 // Prepare and execute the SQL query
                 qry->prepare("SELECT amount FROM " + income_or_expense + " WHERE date = " + date);
+                 double sum{};
 
-                double sum{};
                 // Check if the query was successful
                 if (qry->exec()) {
+
                     while(qry->next()){
                     // Retrieve the sum and add it to the vector
-                        sum += qry->value(3).toDouble();}
+                        qDebug()<<qry->value(0).toString();
+                        sum += qry->value(0).toDouble();}
                 }
 
                y_amount_sums.push_back(sum);
@@ -158,25 +159,24 @@ void LineGraph::on_view_btn_clicked()
             Reason = {"food","entertainment","rent","study","travel","others"};
             QVector<QString> Reason1;
             for(QString items: Reason){
-                QSqlQuery query;
-                if(query.exec("SELECT reason, amount FROM "+ temp_username+"_ex")) {
-                    double total{};
-                    int i=0;
-                    while(query.next()) {
-                        QString reason = query.value(2).toString();
-                        double amount = query.value(3).toDouble();
+                    QSqlQuery query;
+                    if(query.exec("SELECT reason, amount FROM "+ MainWindow::temp_username+"_ex")) {
+                        for(int i = 0;i<6;i++){
+                            double total = 0.0;
+                            while(query.next()) {
+                                QString reason = query.value(0).toString();
+                                double amount = query.value(1).toDouble();
 
-                        // Now you can use the reason and amount variables
-                        // For example, you can add them to your vectors:
-                        Reason1.push_back(reason);
-                        total += amount;
-                        i++;
+                                // Now you can use the reason and amount variables
+                                // For example, you can add them to your vectors:
+                                Reason1.push_back(reason);
+                                total +=amount;
+                            }
+                            reason_amt[i].push_back(total);
+                        }
+                    } else {
+                        qDebug() << "Query failed: " << query.lastError();
                     }
-                    reason_amt[i].push_back(total);
-                } else {
-                    qDebug() << "Query failed: " << query.lastError();
-                }
-
             }
         }
 
@@ -186,12 +186,12 @@ void LineGraph::on_view_btn_clicked()
             QVector<QString> Reason1;
             for(QString items: Reason){
                 QSqlQuery query;
-                if(query.exec("SELECT reason, amount FROM "+ temp_username+"_in")) {
+                if(query.exec("SELECT reason, amount FROM "+ MainWindow::temp_username+"_in")) {
                     for(int i = 0;i<2;i++){
                         double total = 0.0;
                     while(query.next()) {
-                        QString reason = query.value(2).toString();
-                        double amount = query.value(3).toDouble();
+                        QString reason = query.value(0).toString();
+                        double amount = query.value(1).toDouble();
 
                         // Now you can use the reason and amount variables
                         // For example, you can add them to your vectors:
@@ -206,60 +206,6 @@ void LineGraph::on_view_btn_clicked()
             }
 
         }
-        else if(ui->select_all_btn->isChecked()){
-            db_conn_open();
-            Reason = {"family","personal","food","entertainment","rent","study","travel","others"};
-
-
-        QVector<QString> Reason1;
-        for(QString items: Reason){
-           QSqlQuery query;
-             if(items =="family"||items =="personal"){
-               QVector<QString> Reason1;
-                for(QString items: Reason){
-                   double total{};
-                    QSqlQuery query;
-                     if(query.exec("SELECT reason, amount FROM "+ temp_username+"_in")) {
-                        for(int i =0; i<2 ; i++){
-                            while(query.next()) {
-                                QString reason = query.value(2).toString();
-                                double amount = query.value(3).toDouble();
-
-                                // Now you can use the reason and amount variables
-                                // For example, you can add them to your vectors:
-                                Reason1.push_back(reason);
-                                total += amount;
-
-                            }
-                            reason_amt[i].push_back(total);
-                        }
-                        }
-                     else {
-                            qDebug() << "Query failed: " << query.lastError();
-                        }
-                    }}
-                else{
-                    if(query.exec("SELECT reason, amount FROM "+ temp_username+"_ex")) {
-                            double total{};
-
-
-                    for(int i =0 ;i<6;i++){
-                    while(query.next()) {
-                        QString reason = query.value(2).toString();
-                        double amount = query.value(3).toDouble();
-                        // Now you can use the reason and amount variables
-                        // For example, you can add them to your vectors:
-                        Reason1.push_back(reason);
-                        total +=amount;
-                    }
-                    reason_amt[i].push_back(total);
-                            }
-                } else {
-                    qDebug() << "Query failed: " << query.lastError();
-                }
-             }
-
-
 
           db_conn_close();
         //deletes graph objects and their correspending data
@@ -278,8 +224,9 @@ void LineGraph::on_view_btn_clicked()
 
 
         // Define colors for income and expense graphs
-        QVector<QColor> incomeColors = {Qt::blue, Qt::green};
-        QVector<QColor> expenseColors = {Qt::red, Qt::magenta, Qt::yellow, Qt::cyan, Qt::darkCyan};
+        QColor incomeColors[] = {Qt::blue, Qt::black};
+        QColor expenseColors[] = {Qt::red, Qt::magenta, Qt::yellow, Qt::cyan, Qt::darkCyan};
+
         // Clear existing graphs and data:
         ui->customPlot->clearPlottables();
 
@@ -291,24 +238,34 @@ void LineGraph::on_view_btn_clicked()
 
         // Add income graphs if applicable:
         if (income_) {
-                for (int i = 0; i < 2; ++i) {
+            int i =0;
+                for (QString items:Reason) {
                 ui->customPlot->addGraph();
                 QPen incomePen;
                 incomePen.setColor(incomeColors[i]);
                 ui->customPlot->graph(ui->customPlot->graphCount() - 1)->setPen(incomePen);
+                ui->customPlot->graph(ui->customPlot->graphCount()-1)->setName(items);
                 ui->customPlot->graph(ui->customPlot->graphCount() - 1)->setData(x_day_numbers, reason_amt[i]);
+                i++;
                 }
         }
 
         // Add expense graphs if applicable:
         if (expense_) {
-                for (int i = 0; i < 6; ++i) {
-                ui->customPlot->addGraph();
-                QPen expensePen;
-                expensePen.setColor(expenseColors[i]);
-                ui->customPlot->graph(ui->customPlot->graphCount() - 1)->setPen(expensePen);
-                ui->customPlot->graph(ui->customPlot->graphCount() - 1)->setData(x_day_numbers, reason_amt[i + 2]);
+                int i =0;
+                for (QString items:Reason) {
+                while (reason_amt[i].size() < x_day_numbers.size()) {
+                    reason_amt[i].push_back(0);
                 }
+                ui->customPlot->addGraph();
+                QPen expensePen{};
+                expensePen.setColor(expenseColors[i]);
+                ui->customPlot->graph(ui->customPlot->graphCount()-1)->setPen(expensePen);
+                ui->customPlot->graph(ui->customPlot->graphCount()-1)->setName(items);
+                ui->customPlot->graph(ui->customPlot->graphCount()-1)->setData(x_day_numbers, reason_amt[i]);
+                i++;
+                }
+
         }
 
         // Set data for the total amount graph if it exists:
@@ -324,20 +281,17 @@ void LineGraph::on_view_btn_clicked()
         ui->customPlot->legend->setVisible(true);
         ui->customPlot->replot();
 
-
-
-
         //to display legend/index
         ui->customPlot->legend->setVisible(true);
 
         //to display graph(s)
         ui->customPlot->replot();
         }
-        }
-    }
+
+
     else if (temp == "No. of transaction"){//to view graph on the basis of No. of transaction whose index in comboBox is 1
         db_conn_open();
-
+        QVector<double> income_count={0.0},expense_count={0.0};
         QSqlQuery *qry = new QSqlQuery(main_db);
 
         QSqlQueryModel *model = new QSqlQueryModel();
@@ -359,25 +313,26 @@ void LineGraph::on_view_btn_clicked()
                 month_number_text = QString::number(month_number);
 
             // to get date in YYYY-MM-DD format; year is not counted, only month and day are counted
-            QString date = "'____-" + month_number_text + "-" + day_number_text + "'";
+            QString date = "'2023-" + month_number_text + "-" + day_number_text + "'";
 
             // to get no. of transaction per day
             if(ui->select_all_btn->isChecked()){//if All is selected
 
                 //buyer_count = no. of tranaction with buyers, seller_count = no. of transaction with sellers
-                double income_count = 0.0, expense_count = 0.0;
+                income_count[0] = 0.0;
+                expense_count[0] = 0.0;
 
-                qry->prepare("SELECT COUNT (`id`) FROM " + temp_username + "_in WHERE date LIKE " + date);//counting no. of row where given date matches
+                qry->prepare("SELECT COUNT (`id`) FROM " + MainWindow::temp_username + "_in WHERE date LIKE " + date);//counting no. of row where given date matches
                 qry->exec();
                 model->setQuery(*qry);
-                income_count = model->data(model->index(0,0)).toDouble();//returns value at index(0,0) i.e. first row, first column
+                income_count[0] = model->data(model->index(0,0)).toDouble();//returns value at index(0,0) i.e. first row, first column
 
-                qry->prepare("SELECT COUNT (`id`) FROM " + temp_username + "_ex WHERE date LIKE " + date);//counting no. of row where given date matches
+                qry->prepare("SELECT COUNT (`id`) FROM " + MainWindow::temp_username + "_ex WHERE date LIKE " + date);//counting no. of row where given date matches
                 qry->exec();
                 model->setQuery(*qry);
-                expense_count = model->data(model->index(0,0)).toDouble();
+                expense_count[0] = model->data(model->index(0,0)).toDouble();
 
-                num_of_transactions_list.push_back(income_count + expense_count);//number of transaction including both buyers and sellers
+                num_of_transactions_list.push_back(income_count[0] + expense_count[0]);//number of transaction including both income and expense
             }
             else if (ui->select_income_btn->isChecked() || ui->select_expense_btn->isChecked()){//if income or expense is selected
                 qry->prepare("SELECT COUNT (`id`) FROM " + income_or_expense + " WHERE date LIKE " + date); //add date
@@ -404,16 +359,34 @@ void LineGraph::on_view_btn_clicked()
         //add graph to customPlot object
         ui->customPlot->addGraph();
         ui->customPlot->graph(0)->setPen(QPen(Qt::blue));
-        ui->customPlot->graph(0)->setName("No. of transaction");//set name of the graph
+        ui->customPlot->graph(0)->setName("No. of transaction");
+         ui->customPlot->yAxis->setRange(0, y_max_transaction_num);
+        ui->customPlot->yAxis->setLabel("No. of transaction");
+        ui->customPlot->graph(0)->setData(x_day_numbers, num_of_transactions_list);
+        if(ui->select_all_btn->isChecked()){
+            ui->customPlot->addGraph();
+            ui->customPlot->graph(1)->setPen(QPen(Qt::cyan));
+            ui->customPlot->graph(1)->setName("income");
+            ui->customPlot->graph(1)->setData(x_day_numbers,income_count);
+            ui->customPlot->legend->setVisible(true);
+            ui->customPlot->replot();
+
+            ui->customPlot->addGraph();
+            ui->customPlot->graph(2)->setPen(QPen(Qt::black));
+            ui->customPlot->graph(2)->setName("expense");
+            ui->customPlot->graph(2)->setData(x_day_numbers,expense_count);
+            ui->customPlot->legend->setVisible(true);
+            ui->customPlot->replot();
+        }//set name of the graph
 
         // set name of the y-axis
-        ui->customPlot->yAxis->setLabel("No. of transaction");
+
 
         //set range of y-coordinate values from 0 to y_max_transaction_num
-        ui->customPlot->yAxis->setRange(0, y_max_transaction_num);
+
 
         //set points to plot graph
-        ui->customPlot->graph(0)->setData(x_day_numbers, num_of_transactions_list);
+
 
         //to display legend/index
         ui->customPlot->legend->setVisible(true);
@@ -421,8 +394,8 @@ void LineGraph::on_view_btn_clicked()
         //to display graph(s)
         ui->customPlot->replot();
     }
-    }
 
+}
 
 
 

@@ -94,15 +94,16 @@ void Login::on_loginButton_clicked()
 
         if (count == 1){
            qDebug() << "Correct username and password";
+            MainWindow::temp_username=username;
 
-           QFile file("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/main/text.txt");//enter actual path
-           QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("temp.txt");
+           QFile file("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/Expenditure_Traversing_system/main/temp.txt");//enter actual path
+           QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("text.txt");
            qDebug() << temp_file_path;
            //QFile file(temp_file_path);
 
            if (!file.open(QFile::WriteOnly | QFile::Text)){
                qDebug() << "File not opened";
-               return;
+
            } else {
                qDebug() << "File opened";
 

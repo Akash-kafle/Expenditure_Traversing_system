@@ -5,6 +5,7 @@
 #include <QBEInteger>
 
 // #include <QIntValidator>
+QString MainWindow::temp_username;
 
 #include "header/login.h"
 
@@ -17,16 +18,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(), // parent was passed he
     ui->setupUi(this);
 
     // file stuffs
-    QFile file("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/main/text.txt"); // change path for your system
-    QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("temp.txt");
+    QFile file("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/Expenditure_Traversing_system/main/temp.txt"); // change path for your system
+    QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("text.txt");
     qDebug() << temp_file_path;
-    // QFile file(temp_file_path);
+
 
     if (!file.open(QFile::ReadOnly | QFile::Text))
     {
         qDebug() << "File not opened";
         qDebug()<<file.errorString();
-        return;
     }
     else
     {
@@ -37,7 +37,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(), // parent was passed he
     }
 
     ui->username_display->setText(temp_username);
-
     // database connection
     if (!db_conn_open())
         qDebug() << "Database connection failed.";
@@ -507,11 +506,8 @@ void MainWindow::on_view_button_clicked()
     }
 
     qry->prepare("SELECT * FROM " + income_or_expense);
-
     qry->exec();
     model->setQuery(*qry);
-
-
     ui->display_area->setModel(model);
     db_conn_close();
 }
@@ -843,14 +839,14 @@ void MainWindow::createFinancialReport( QString &filePath)
     // Set up the report header
     QFont headerFont("Arial", 14, QFont::Bold);
     painter.setFont(headerFont);
-    painter.drawText(QRect(5000, 1000, 4000, 500), Qt::AlignLeft, "Financial Report");
+    painter.drawText(QRect(4000, 500, 4000, 500), Qt::AlignLeft, "Financial Report");
 
     // Set up the table headers
     QFont tableHeaderFont("Arial", 12, QFont::Bold);
     painter.setFont(tableHeaderFont);
-    painter.drawText(QRect(5000, 1500, 1000, 300), Qt::AlignLeft, "Date");
+    painter.drawText(QRect(4000, 1500, 1000, 300), Qt::AlignLeft, "Date");
     painter.drawText(QRect(5000, 1500, 1000, 300), Qt::AlignLeft, "Type");
-    painter.drawText(QRect(5000, 1500, 1000, 300), Qt::AlignLeft, "Amount");
+    painter.drawText(QRect(6000, 1500, 1000, 300), Qt::AlignLeft, "Amount");
 
     // Set up the table rows
     QFont tableRowFont("Arial", 10);
@@ -862,13 +858,32 @@ void MainWindow::createFinancialReport( QString &filePath)
         QString type = query.value("reason").toString();
         double amount = query.value("amount").toDouble();
 
-        painter.drawText(QRect(3000, 1800 + row * 100, 1000, 200), Qt::AlignLeft, date);
-        painter.drawText(QRect(3000, 1800 + row * 100, 1000, 200), Qt::AlignLeft, type);
-        painter.drawText(QRect(3000, 1800 + row * 100, 1000, 200), Qt::AlignLeft, QString::number(amount));
+        painter.drawText(QRect(3000, 1000 + row * 150, 1000, 200), Qt::AlignLeft, date);
+        painter.drawText(QRect(4000, 1000 + row * 150, 1000, 200), Qt::AlignLeft, type);
+        painter.drawText(QRect(5000, 1000 + row * 150, 1000, 200), Qt::AlignLeft, QString::number(amount));
 
         row++;
     }
+    int total_inc[2],total_exp[6];
+    int i =0;
+    QDate Date = QDate::currentDate();
 
+
+    for(QString reason: list_income){
+
+        if(query.exec("SELECT SUM(amount) FROM "+MainWindow::temp_username+"_in WHERE date < "+date+" AND reason = "+reason)){
+            total_inc[i] = query.value(0).toInt();
+    }
+    i++;
+    }
+    i = 0;
+    for(QString reason : list_expense){
+
+    if(query.exec("SELECT SUM(amount) FROM "+MainWindow::temp_username+"_ex WHERE date < "+date+" AND reason = "+reason)){
+            total_exp[i] = query.value(0).toInt();
+    }
+    i++;
+    }
     double cosineSimilarity{};
     double incomeSum = 0.0, expenseSum = 0.0, productSum = 0.0;
     // Fetch transactions from the income table
@@ -932,17 +947,17 @@ void MainWindow::createFinancialReport( QString &filePath)
     // Write the cosine similarity to the PDF
     const int TEXT_X = 2000;
     const int TEXT_Y = 5600;
-    const int PIE_RADIUS = 100;
-    const int PIE_X = 5000;
-    const int PIE_Y_OFFSET = 5800;
-    const int ROW_HEIGHT = 5000;
-    const int PIE_Y_EXTRA = 5000;
+    const int PIE_RADIUS = 1000;
+    const int PIE_X = 4000;
+    const int PIE_Y_OFFSET = 4800;
+    const int ROW_HEIGHT = 4000;
+    const int PIE_Y_EXTRA = 4000;
     const int ANGLE_MULTIPLIER = 1600;
     const int RECT_WIDTH = 1000;
     const int RECT_HEIGHT = 1000;
     const int TOTAL_X = 500;
     const int TOTAL_WIDTH = 1000;
-    const int ANALYSIS_Y_EXTRA = 5000;
+    const int ANALYSIS_Y_EXTRA = 4000;
     const int ANALYSIS_WIDTH = 2000;
     const int ANALYSIS_HEIGHT = 2000;
     QFont analysisFont("Arial", 10);
@@ -1002,15 +1017,15 @@ void MainWindow::createFinancialReport( QString &filePath)
 
     // Draw the average income
     QString averageIncomeText = QString("Average income: %1").arg(averageIncome);
-    painter.drawText(5000, 1000, averageIncomeText);
+    painter.drawText(3000, 1500, averageIncomeText);
 
     // Draw the median income
     QString medianIncomeText = QString("Median income: %1").arg(medianIncome);
-    painter.drawText(5000, 1200, medianIncomeText);
+    painter.drawText(3000, 2000, medianIncomeText);
 
     // Draw the standard deviation of the income
     QString standardDeviationText = QString("Standard deviation of income: %1").arg(standardDeviation);
-    painter.drawText(5000, 1400, standardDeviationText);
+    painter.drawText(3000, 2500, standardDeviationText);
 
 
 
@@ -1020,15 +1035,28 @@ void MainWindow::createFinancialReport( QString &filePath)
 
     // Draw a pie slice for each category
     double startAngle = 0.0;
-    for (int i = 0; i < totals.size(); ++i)
+    int pieY = PIE_Y_OFFSET + ROW_HEIGHT;  // Adjust position for pie chart
+    for (int i = 0; i < incomeTotals.size(); ++i)
     {
-        QString category = totals.keys()[i];
-        double total = totals[category];
-        double sliceAngle = total / allTotals * 360.0;
-        int pieY = PIE_Y_OFFSET + i * ROW_HEIGHT + PIE_Y_EXTRA;
+        QString category = incomeTotals.keys()[i];
+        double total = incomeTotals[category];
+        double sliceAngle = total / totalIncome * 360.0;
         painter.drawPie(PIE_X, pieY, PIE_RADIUS * 2, PIE_RADIUS * 2, startAngle * ANGLE_MULTIPLIER, sliceAngle * ANGLE_MULTIPLIER);
         startAngle += sliceAngle;
     }
+
+    pieY += ROW_HEIGHT + PIE_Y_EXTRA;  // Adjust position for expense pie chart
+    for (int i = 0; i < expenseTotals.size(); ++i)
+    {
+        QString category = expenseTotals.keys()[i];
+        double total = expenseTotals[category];
+        double sliceAngle = total / allTotals * 360.0;
+        painter.drawPie(PIE_X, pieY, PIE_RADIUS * 2, PIE_RADIUS * 2, startAngle * ANGLE_MULTIPLIER, sliceAngle * ANGLE_MULTIPLIER);
+        startAngle += sliceAngle;
+    }
+
+
+
     // Write each title and total to the PDF
     QFont categoryFont("Arial", 10);
     painter.setFont(categoryFont);
