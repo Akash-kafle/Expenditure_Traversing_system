@@ -416,11 +416,11 @@ void MainWindow::on_delete_button_clicked()
 
     if (reply_from_user == QMessageBox::Yes)
     {
-        QString buyer_or_seller;
+        QString income_expense;
         if (ui->select_expense_btn->isChecked())
-            buyer_or_seller = temp_username + "_ex";
+            income_expense = temp_username + "_ex";
         else if (ui->select_income_btn->isChecked())
-            buyer_or_seller = temp_username + "_in";
+            income_expense = temp_username + "_in";
 
         QString id = ui->transaction_ID->text();
         int id_empty = id.isEmpty();
@@ -436,7 +436,7 @@ void MainWindow::on_delete_button_clicked()
             db_conn_open();
 
             QSqlQuery check_transaction_id_qry;
-            check_transaction_id_qry.prepare("SELECT * from " + buyer_or_seller + " WHERE `Transaction ID` = " + id);
+            check_transaction_id_qry.prepare("SELECT * from " + income_expense + " WHERE `id` = " + id);
 
             int transaction_id_count = 0;
             if (check_transaction_id_qry.exec())
@@ -452,9 +452,9 @@ void MainWindow::on_delete_button_clicked()
                 QSqlQuery delete_qry;
 
                 if (ui->select_expense_btn->isChecked())
-                    delete_qry.prepare("DELETE FROM " + temp_username + "_ex WHERE `id` = " + id);
+                    delete_qry.prepare("DELETE FROM " + MainWindow::temp_username + "_ex WHERE `id` = " + id);
                 else if (ui->select_income_btn->isChecked())
-                    delete_qry.prepare("DELETE FROM " + temp_username + "_in WHERE `id` = " + id);
+                    delete_qry.prepare("DELETE FROM " + MainWindow::temp_username + "_in WHERE `id` = " + id);
 
                 if (delete_qry.exec())
                 {
@@ -498,11 +498,11 @@ void MainWindow::on_view_button_clicked()
 
     if (!income_or_expense_index)
     { // for income
-        income_or_expense = temp_username + "_in";
+        income_or_expense = MainWindow::temp_username + "_in";
     }
     else if (income_or_expense_index)
     { // for expense
-        income_or_expense = temp_username + "_ex";
+        income_or_expense = MainWindow::temp_username + "_ex";
     }
 
     qry->prepare("SELECT * FROM " + income_or_expense);
@@ -653,7 +653,7 @@ void MainWindow::on_apply_sort_btn_clicked()
 
     ui->buyer_or_seller_drop_menu->setCurrentIndex(0);
     ui->sort_by_drop_menu->clear();
-    QString sort_by[] = {"Transaction ID", "Date", "reason", "amount"};
+    QString sort_by[] = {"id", "date", "reason", "amount"};
     // adding options in sort_by_opt_drop_menu
     for (auto &sort_by_opt : sort_by)
     {
@@ -670,7 +670,7 @@ void MainWindow::on_apply_filter_btn_clicked()
 
     ui->buyer_or_seller_drop_menu->setCurrentIndex(0);
     ui->filter_by_drop_menu->clear();
-    QString filter_by[] = {"Transaction ID", "Month", "reason", "amount"};
+    QString filter_by[] = {"id", "date", "reason", "amount"};
     // adding options in filter_by_drop_menu
     for (auto &filter_by_opt : filter_by)
     {
@@ -694,7 +694,7 @@ void MainWindow::on_show_graph_btn_clicked()
 {
     QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("temp.txt");
     qDebug() << temp_file_path;
-    QFile file("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/ETS/main/text.txt");
+    QFile file("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/Expenditure_traversing_system/main/text.txt");
 
     if (!file.open(QFile::WriteOnly | QFile::Text))
     {
@@ -748,14 +748,14 @@ void MainWindow::on_buyer_or_seller_drop_menu_currentIndexChanged(int index)
         ui->sort_by_drop_menu->clear();
         if (!index)
         {
-            QString sort_by[8] = {"Transaction ID", "Date", "reason", "amount"};
+            QString sort_by[] = {"id", "date", "reason", "amount"};
             // adding options in sort_by_opt_drop_menu
             for (auto &sort_by_opt : sort_by)
                 ui->sort_by_drop_menu->addItem(sort_by_opt);
         }
         else if (index)
         {
-            QString sort_by[8] = {"Transaction ID", "Date", "reason", "amount"};
+            QString sort_by[] = {"id", "date", "reason", "amount"};
             // adding options in sort_by_opt_drop_menu
             for (auto &sort_by_opt : sort_by)
                 ui->sort_by_drop_menu->addItem(sort_by_opt);
@@ -766,14 +766,14 @@ void MainWindow::on_buyer_or_seller_drop_menu_currentIndexChanged(int index)
         ui->filter_by_drop_menu->clear();
         if (!index)
         {
-            QString filter_by[] = {"Transaction ID", "Month", "reason", "amount"};
+            QString filter_by[] = {"id", "date", "reason", "amount"};
             // adding options in filter_by_drop_menu
             for (auto &filter_by_opt : filter_by)
                 ui->filter_by_drop_menu->addItem(filter_by_opt);
         }
         else if (index)
         {
-            QString filter_by[] = {"Transaction ID", "Month", "reason", "amount"};
+            QString filter_by[] = {"id", "date", "reason", "amount"};
             // adding options in filter_by_drop_menu
             for (auto &filter_by_opt : filter_by)
                 ui->filter_by_drop_menu->addItem(filter_by_opt);
@@ -871,17 +871,17 @@ void MainWindow::createFinancialReport( QString &filePath)
 
     for(QString reason: list_income){
 
-        if(query.exec("SELECT SUM(amount) FROM "+MainWindow::temp_username+"_in WHERE date < "+date+" AND reason = "+reason)){
-            total_inc[i] = query.value(0).toInt();
-    }
+        //if(query.exec("SELECT SUM(amount) FROM "+MainWindow::temp_username+"_in WHERE date < "+date+" AND reason = "+reason)){
+           // total_inc[i] = query.value(0).toInt();
+   // }
     i++;
     }
     i = 0;
     for(QString reason : list_expense){
 
-    if(query.exec("SELECT SUM(amount) FROM "+MainWindow::temp_username+"_ex WHERE date < "+date+" AND reason = "+reason)){
+    /*if(query.exec("SELECT SUM(amount) FROM "+MainWindow::temp_username+"_ex WHERE date < "+date+" AND reason = "+reason)){
             total_exp[i] = query.value(0).toInt();
-    }
+    }*/
     i++;
     }
     double cosineSimilarity{};
