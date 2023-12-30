@@ -34,10 +34,10 @@ LineGraph::LineGraph(QWidget *parent) :
     ui->view_btn->setIcon(view_icon);
     ui->view_btn->setIconSize(QSize(24, 24));
 
-    QPixmap help(":/img/img/question.png");
-    QIcon help_icon(help);
-    ui->help_button->setIcon(help_icon);
-    ui->help_button->setIconSize(QSize(32, 32));
+    // QPixmap help(":/img/img/question.png");
+    // QIcon help_icon(help);
+    // ui->help_button->setIcon(help_icon);
+    // ui->help_button->setIconSize(QSize(32, 32));
 }
 
 LineGraph::~LineGraph()

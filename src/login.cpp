@@ -72,8 +72,8 @@ void Login::on_createAccount_clicked()
 void Login::on_loginButton_clicked()
 {
     //if given username and password is correct then execute the following;
-    QString username = "aakash";// ui->loginUsernameInput->text();
-    QString password = "a@12345678";//ui->loginPasswordInput->text();
+    QString username =  ui->loginUsernameInput->text();
+    QString password =  ui->loginPasswordInput->text();
 
     if(!db_conn_open()){
         qDebug() << "Database connection failed.";

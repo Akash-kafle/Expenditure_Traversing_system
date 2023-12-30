@@ -55,33 +55,6 @@
      <string notr="true">background: none;</string>
     </property>
    </widget>
-   <widget class="QLabel" name="plot_title">
-    <property name="geometry">
-     <rect>
-      <x>29</x>
-      <y>24</y>
-      <width>941</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>SF Pro Text</family>
-      <pointsize>-1</pointsize>
-      <italic>false</italic>
-      <fontweight>Black</fontweight>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">qproperty-alignment: AlignCenter;
-background-color: #fff;
-color: #374957;
-font: 900 18px &quot;SF Pro Text&quot;;</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
@@ -265,24 +238,20 @@ font: 9pt &quot;SF Pro Display&quot;;
      </property>
     </widget>
    </widget>
-   <widget class="QPushButton" name="help_button">
+   <widget class="QLabel" name="plot_title">
     <property name="geometry">
      <rect>
-      <x>920</x>
-      <y>30</y>
-      <width>32</width>
-      <height>32</height>
+      <x>30</x>
+      <y>20</y>
+      <width>941</width>
+      <height>41</height>
      </rect>
     </property>
-    <property name="cursor">
-     <cursorShape>PointingHandCursor</cursorShape>
-    </property>
-    <property name="toolTip">
-     <string>Help</string>
-    </property>
     <property name="styleSheet">
-     <string notr="true">background: transparent;
-</string>
+     <string notr="true">qproperty-alignment: AlignCenter;
+background-color: #fff;
+color: #374957;
+font: 900 18px &quot;SF Pro Text&quot;;</string>
     </property>
     <property name="text">
      <string/>
