@@ -18,12 +18,12 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     Login w;
-    QFontDatabase::addApplicationFont("C:/Users/97798/Desktop/QTP/Expenditure_Traversing_system/Sf-Pro.ttf");
-    QFontDatabase db;
-    for(int i=0; i<db.families().size(); i++)
-    {
-        qDebug() << db.families().at(i);
-    }
+    //QFontDatabase::addApplicationFont("C:/Users/97798/Desktop/QTP/Expenditure_Traversing_system/Sf-Pro.ttf");
+    //QFontDatabase db;
+    //for(int i=0; i<db.families().size(); i++)
+    //{
+    //    qDebug() << db.families().at(i);
+    //}
 
     QMovie *movie = new QMovie("C:/Users/97798/Desktop/QTP/Expenditure_Traversing_system/img/splash_screen.gif");
     QLabel *processLabel = new QLabel(NULL);

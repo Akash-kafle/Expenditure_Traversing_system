@@ -46,80 +46,15 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>401</width>
+      <width>418</width>
       <height>871</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">#frame{
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb(0,64,221), stop:1 rgb(40, 205, 65));
-	border-radius: 0;
-}
-
-#transaction_ID, #date_input, #name_input, #address_input, #phone_input, #amount1_input, #amount2_input, #amount3_input, #remarks_input{
-	border-radius: 0;
-	border-top-right-radius: 8px;
-	border-bottom-right-radius: 8px;
-	border: 1px solid #fff;
-	padding:5px;
-	background-color: #fff;
-	
-	font: 600 17px &quot;SF Pro Display&quot;;
-	color: #374957;
-}
-
-#transaction_ID:focus, #date_input:focus, #name_input:focus, #address_input:focus, #phone_input:focus, #amount1_input:focus, #amount2_input:focus, #amount3_input:focus, #remarks_input:focus{
-	background-color: #E3E8F0;
-}
-
-#select_buyer_btn, #select_seller_btn{
-	color: #fff;
-	font-size: 17px;
-}
-
-#save_button, #calculate_net_amount_btn{
-	border-radius: 8px;
-	background-color: #32D736;
-	font-size: 17px;
-	color: #fff;
-	padding: 8px;
-}
-
-#calculate_net_amount_btn{
-	border-top-left-radius: none;
-	border-bottom-left-radius: none;
-}
-
-#save_button:hover, #calculate_net_amount_btn:hover {
-	background-color: #34E038;
-}
-
-#update_button{
-	border: 2px solid  #88B2CC;
-	border-radius: 8px;
-	background-color: #88B2CC;
-	font-size: 17px;
-	color: #fff;
-	padding: 8px;
-}
-
-#update_button:hover{
-	background-color: #96c4e0;
-	border-color: #96c4e0;
-}
-
-#delete_button{
-	border: 2px solid #f77062;
-	border-radius: 8px;
-	background-color: transparent;
-	font-size: 17px;
-	color: #f77062;
-	padding: 8px;
-}
-
-#delete_button:hover{
-	background-color: #f77062;
-	color: #fff;
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb(64, 224, 208)
+, stop:1 #cead32);
+    border-radius: 0;
 }</string>
     </property>
     <property name="frameShape">
@@ -131,8 +66,8 @@
     <widget class="QLabel" name="remarks_icon">
      <property name="geometry">
       <rect>
-       <x>37</x>
-       <y>710</y>
+       <x>40</x>
+       <y>630</y>
        <width>41</width>
        <height>41</height>
       </rect>
@@ -155,8 +90,8 @@ qproperty-alignment: AlignCenter;</string>
     <widget class="QPushButton" name="save_button">
      <property name="geometry">
       <rect>
-       <x>60</x>
-       <y>780</y>
+       <x>150</x>
+       <y>700</y>
        <width>91</width>
        <height>41</height>
       </rect>
@@ -164,9 +99,9 @@ qproperty-alignment: AlignCenter;</string>
      <property name="font">
       <font>
        <family>SF Pro Text</family>
-       <pointsize>-1</pointsize>
+       <pointsize>9</pointsize>
        <italic>false</italic>
-       <bold>true</bold>
+       <bold>false</bold>
       </font>
      </property>
      <property name="cursor">
@@ -176,7 +111,20 @@ qproperty-alignment: AlignCenter;</string>
       <string>Click here to save the record.</string>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">
+#save_button {
+	background-color:rgb(0,125,27);
+	border-radius: 10px;
+	color: #fff;
+	font: 9pt &quot;SF Pro Text&quot;;
+	padding: 8px;
+}
+
+#save_button:hover {
+	background-color:rgb(64,156,255);
+}
+
+</string>
      </property>
      <property name="text">
       <string>  Save</string>
@@ -188,8 +136,8 @@ qproperty-alignment: AlignCenter;</string>
     <widget class="QLineEdit" name="amount_input">
      <property name="geometry">
       <rect>
-       <x>77</x>
-       <y>490</y>
+       <x>70</x>
+       <y>500</y>
        <width>287</width>
        <height>41</height>
       </rect>
@@ -199,47 +147,18 @@ qproperty-alignment: AlignCenter;</string>
        <family>SF Pro Display</family>
        <pointsize>10</pointsize>
        <italic>false</italic>
-      
+       <bold>false</bold>
       </font>
      </property>
      <property name="toolTip">
       <string/>
      </property>
      <property name="styleSheet">
-      <string notr="true">font: 600 10pt &quot;SF Pro Display&quot;;</string>
+      <string notr="true">color:#000;
+font:  10pt &quot;SF Pro Display&quot;;</string>
      </property>
      <property name="placeholderText">
       <string/>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="remarks_input">
-     <property name="geometry">
-      <rect>
-       <x>77</x>
-       <y>710</y>
-       <width>287</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>SF Pro Display</family>
-       <pointsize>10</pointsize>
-       <italic>false</italic>
-      
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>Enter remarks.</string>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 600 10pt &quot;SF Pro Display&quot;;</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string>Remarks</string>
      </property>
     </widget>
     <widget class="QLabel" name="transaction_amounts">
@@ -254,13 +173,13 @@ qproperty-alignment: AlignCenter;</string>
      <property name="font">
       <font>
        <family>SF Pro Display</family>
-       <pointsize>-1</pointsize>
+       <pointsize>10</pointsize>
        <italic>false</italic>
-      
+       <bold>false</bold>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">font: 600 17px &quot;SF Pro Display&quot;;
+      <string notr="true">font: 10pt &quot;SF Pro Display&quot;;
 color: #fff;
 background-color: transparent;</string>
      </property>
@@ -271,9 +190,9 @@ background-color: transparent;</string>
     <widget class="QLabel" name="username_display">
      <property name="geometry">
       <rect>
-       <x>177</x>
-       <y>17</y>
-       <width>211</width>
+       <x>140</x>
+       <y>90</y>
+       <width>151</width>
        <height>41</height>
       </rect>
      </property>
@@ -294,38 +213,11 @@ background-color: transparent;</string>
       <string/>
      </property>
     </widget>
-    <widget class="QLineEdit" name="transaction_ID">
-     <property name="geometry">
-      <rect>
-       <x>77</x>
-       <y>107</y>
-       <width>287</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>SF Pro Display</family>
-       <pointsize>10</pointsize>
-       <italic>false</italic>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>Transaction ID must be a positive integer.</string>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font:  10pt &quot;SF Pro Display&quot;;</string>
-     </property>
-     <property name="placeholderText">
-      <string>Transaction ID</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="transaction_ID_icon">
      <property name="geometry">
       <rect>
-       <x>37</x>
-       <y>107</y>
+       <x>40</x>
+       <y>210</y>
        <width>41</width>
        <height>41</height>
       </rect>
@@ -345,37 +237,10 @@ qproperty-alignment: AlignCenter;</string>
       <string/>
      </property>
     </widget>
-    <widget class="QLineEdit" name="date_input">
-     <property name="geometry">
-      <rect>
-       <x>77</x>
-       <y>167</y>
-       <width>287</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>SF Pro Display</family>
-       <pointsize>10</pointsize>
-       <italic>false</italic>
-      
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>Date of transaction.</string>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 600 10pt &quot;SF Pro Display&quot;;</string>
-     </property>
-     <property name="placeholderText">
-      <string>YYYY-MM-DD</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="delete_button">
      <property name="geometry">
       <rect>
-       <x>280</x>
+       <x>240</x>
        <y>780</y>
        <width>111</width>
        <height>41</height>
@@ -384,9 +249,9 @@ qproperty-alignment: AlignCenter;</string>
      <property name="font">
       <font>
        <family>SF Pro Text</family>
-       <pointsize>10</pointsize>
+       <pointsize>9</pointsize>
        <italic>false</italic>
-      
+       <bold>false</bold>
       </font>
      </property>
      <property name="cursor">
@@ -396,7 +261,20 @@ qproperty-alignment: AlignCenter;</string>
       <string>Click here to delete the record.</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">font: 600 10pt &quot;SF Pro Text&quot;</string>
+      <string notr="true">
+#delete_button {
+	background-color:rgb(0,125,27);
+	border-radius: 10px;
+	color: #fff;
+	font: 9pt &quot;SF Pro Text&quot;;
+	padding: 8px;
+}
+
+#delete_button:hover {
+	background-color:rgb(64,156,255);
+}
+
+</string>
      </property>
      <property name="text">
       <string>  Delete</string>
@@ -408,60 +286,34 @@ qproperty-alignment: AlignCenter;</string>
     <widget class="QLabel" name="general_info">
      <property name="geometry">
       <rect>
-       <x>37</x>
-       <y>67</y>
-       <width>191</width>
+       <x>40</x>
+       <y>150</y>
+       <width>111</width>
        <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>SF Pro Display</family>
-       <pointsize>-1</pointsize>
+       <family>SF Pro Text</family>
+       <pointsize>10</pointsize>
        <italic>false</italic>
-      
+       <bold>false</bold>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">font: 600 17px &quot;SF Pro Display&quot;;
+      <string notr="true">font: 10pt &quot;SF Pro Text&quot;;
 color: #fff;
 background-color: transparent;</string>
      </property>
      <property name="text">
-      <string>General Info</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="other">
-     <property name="geometry">
-      <rect>
-       <x>37</x>
-       <y>670</y>
-       <width>191</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>SF Pro Display</family>
-       <pointsize>-1</pointsize>
-       <italic>false</italic>
-      
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 600 17px &quot;SF Pro Display&quot;;
-color: #fff;
-background-color: transparent;</string>
-     </property>
-     <property name="text">
-      <string>Other</string>
+      <string>Record Info</string>
      </property>
     </widget>
     <widget class="QLabel" name="date_icon">
      <property name="geometry">
       <rect>
-       <x>37</x>
-       <y>167</y>
+       <x>40</x>
+       <y>270</y>
        <width>41</width>
        <height>41</height>
       </rect>
@@ -484,8 +336,8 @@ qproperty-alignment: AlignCenter;</string>
     <widget class="QLabel" name="welcome_message">
      <property name="geometry">
       <rect>
-       <x>37</x>
-       <y>17</y>
+       <x>60</x>
+       <y>20</y>
        <width>151</width>
        <height>41</height>
       </rect>
@@ -511,18 +363,18 @@ background-color: transparent;</string>
     <widget class="QPushButton" name="update_button">
      <property name="geometry">
       <rect>
-       <x>169</x>
+       <x>50</x>
        <y>780</y>
-       <width>101</width>
+       <width>111</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>SF Pro Text</family>
-       <pointsize>10</pointsize>
+       <pointsize>9</pointsize>
        <italic>false</italic>
-      
+       <bold>false</bold>
       </font>
      </property>
      <property name="cursor">
@@ -532,7 +384,19 @@ background-color: transparent;</string>
       <string>Click here to update the record.</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">font: 600 10pt &quot;SF Pro Text&quot;</string>
+      <string notr="true">#update_button {
+	background-color:rgb(0,125,27);
+	border-radius: 10px;
+	color: #fff;
+	font: 9pt &quot;SF Pro Text&quot;;
+	padding: 8px;
+}
+
+#update_button:hover {
+	background-color:rgb(64,156,255);
+}
+
+</string>
      </property>
      <property name="text">
       <string>  Update</string>
@@ -541,71 +405,11 @@ background-color: transparent;</string>
       <string>Ctrl+U</string>
      </property>
     </widget>
-    <widget class="QWidget" name="layoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>41</x>
-       <y>225</y>
-       <width>321</width>
-       <height>29</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="buyer_or_seller_group">
-      <item>
-       <widget class="QRadioButton" name="select_income_btn">
-        <property name="font">
-         <font>
-          <family>SF Pro Display</family>
-          <pointsize>9</pointsize>
-          <italic>false</italic>
-         
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>Select me if you are dealing with a buyer.</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">font: 600 9pt &quot;SF Pro Display&quot;;</string>
-        </property>
-        <property name="text">
-         <string>Income</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="select_expense_btn">
-        <property name="font">
-         <font>
-          <family>SF Pro Display</family>
-          <pointsize>9</pointsize>
-          <italic>false</italic>
-         
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>Select me if you are dealing with a seller.</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">font: 600 9pt &quot;SF Pro Display&quot;;</string>
-        </property>
-        <property name="text">
-         <string>Expense</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
     <widget class="QComboBox" name="reason_of_transaction">
      <property name="geometry">
       <rect>
        <x>70</x>
-       <y>320</y>
+       <y>390</y>
        <width>251</width>
        <height>41</height>
       </rect>
@@ -613,6 +417,159 @@ background-color: transparent;</string>
      <property name="styleSheet">
       <string notr="true">font: 600 10pt &quot;SF Pro Display&quot;;</string>
      </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>510</y>
+       <width>24</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap resource="../resources.qrc">:/img/img/ru.png</pixmap>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>630</y>
+       <width>287</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Enter remarks.</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">	border-radius: 0;
+	border-top-right-radius: 8px;
+	border-bottom-right-radius: 8px;
+	border: 1px solid #fff;
+	padding:5px;
+	background-color: #fff;
+	
+	font: 600 17px &quot;SF Pro Display&quot;;
+	color: #374957;
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string>Remarks</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="transaction_ID">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>210</y>
+       <width>287</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Transaction ID must be a positive integer.</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">	border-radius: 0;
+	border-top-right-radius: 8px;
+	border-bottom-right-radius: 8px;
+	border: 1px solid #fff;
+	padding:5px;
+	background-color: #fff;
+	
+	font: 600 17px &quot;SF Pro Display&quot;;
+	color: #374957;</string>
+     </property>
+     <property name="placeholderText">
+      <string>Transaction ID</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="date_input">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>270</y>
+       <width>287</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Date of transaction.</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#date_input{
+	border-radius: 0;
+	border-top-right-radius: 8px;
+	border-bottom-right-radius: 8px;
+	border: 1px solid #fff;
+	padding:5px;
+	background-color: #fff;
+	
+	font: 600 17px &quot;SF Pro Display&quot;;
+	color: #374957;
+}</string>
+     </property>
+     <property name="placeholderText">
+      <string>YYYY-MM-DD</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="other">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>590</y>
+       <width>61</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 600 17px &quot;SF Pro Display&quot;;
+color: #fff;
+background-color: transparent;</string>
+     </property>
+     <property name="text">
+      <string>Other</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>330</y>
+       <width>321</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="buyer_or_seller_group">
+      <item>
+       <widget class="QRadioButton" name="select_income_btn">
+        <property name="styleSheet">
+         <string notr="true">font: 600 9pt &quot;SF Pro Display&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Income</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="select_expense_btn">
+        <property name="styleSheet">
+         <string notr="true">font: 600 9pt &quot;SF Pro Display&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Expense</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </widget>
    <widget class="QFrame" name="frame_2">
@@ -649,17 +606,8 @@ background-color: transparent;</string>
 	background-color: #32D736;
 }
 
-#signout_button{
-	border: 2px solid #f77062;
-	border-radius: 8px;
-	background-color: transparent;
-	color: #f77062;
-}
 
-#signout_button:hover{
-	background-color: #f77062;
-	color: #fff;
-}
+
 
 #show_graph_btn:hover, #export_csv_btn:hover {
 	background-color: #34E038;
@@ -724,39 +672,6 @@ background-color: transparent;</string>
       <string notr="true"/>
      </property>
     </widget>
-    <widget class="QPushButton" name="signout_button">
-     <property name="geometry">
-      <rect>
-       <x>851</x>
-       <y>20</y>
-       <width>111</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>SF Pro Text</family>
-       <pointsize>10</pointsize>
-       <italic>false</italic>
-      
-      </font>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="toolTip">
-      <string>Click here to logout from the system.</string>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">font: 600 10pt &quot;SF Pro Text&quot;</string>
-     </property>
-     <property name="text">
-      <string>  Logout</string>
-     </property>
-     <property name="shortcut">
-      <string>Ctrl+Alt+L</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="show_graph_btn">
      <property name="geometry">
       <rect>
@@ -769,9 +684,9 @@ background-color: transparent;</string>
      <property name="font">
       <font>
        <family>SF Pro Text</family>
-       <pointsize>10</pointsize>
+       <pointsize>9</pointsize>
        <italic>false</italic>
-      
+       <bold>false</bold>
       </font>
      </property>
      <property name="cursor">
@@ -781,7 +696,20 @@ background-color: transparent;</string>
       <string>Click here to have a quick look with graphs.</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">font: 600 10pt &quot;SF Pro Text&quot;</string>
+      <string notr="true">
+#show_graph_btn {
+	background-color:rgb(0,125,27);
+	border-radius: 10px;
+	color: #fff;
+	font: 9pt &quot;SF Pro Text&quot;;
+	padding: 8px;
+}
+
+#show_graph_btn:hover {
+	background-color:rgb(64,156,255);
+}
+
+</string>
      </property>
      <property name="text">
       <string>  Graph</string>
@@ -810,6 +738,35 @@ background-color: transparent;</string>
      </property>
      <property name="text">
       <string/>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="signout_button">
+     <property name="geometry">
+      <rect>
+       <x>850</x>
+       <y>20</y>
+       <width>111</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Click here to logout from the system.</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#signout_button{font: 600 10pt &quot;SF Pro Text&quot;;
+	border: 2px solid #f77062;
+	border-radius: 8px;
+	background-color: transparent;
+	color: #f77062;
+}
+#signout_button:hover{
+	background-color: #f77062;
+	color: #fff;
+}
+</string>
+     </property>
+     <property name="text">
+      <string>Logout</string>
      </property>
     </widget>
    </widget>
@@ -1052,7 +1009,7 @@ QScrollBar::sub-line:vertical {
     <widget class="QPushButton" name="view_button">
      <property name="geometry">
       <rect>
-       <x>792</x>
+       <x>790</x>
        <y>30</y>
        <width>97</width>
        <height>41</height>
@@ -1061,7 +1018,7 @@ QScrollBar::sub-line:vertical {
      <property name="font">
       <font>
        <family>SF Pro Text</family>
-       <pointsize>10</pointsize>
+       <pointsize>9</pointsize>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -1073,13 +1030,29 @@ QScrollBar::sub-line:vertical {
       <string>Displays transaction records.</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">font: 10pt &quot;SF Pro Text&quot;</string>
+      <string notr="true">
+#view_button {
+	background-color:rgb(0,125,27);
+	border-radius: 10px;
+	color: #fff;
+	font: 9pt &quot;SF Pro Text&quot;;
+	padding: 8px;
+}
+
+#view_button:hover {
+	background-color:rgb(64,156,255);
+}
+
+</string>
      </property>
      <property name="text">
       <string>  View</string>
      </property>
      <property name="shortcut">
       <string>Ctrl+V</string>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
      </property>
     </widget>
     <widget class="QComboBox" name="buyer_or_seller_drop_menu">
@@ -1104,9 +1077,9 @@ QScrollBar::sub-line:vertical {
      <property name="font">
       <font>
        <family>SF Pro Text</family>
-       <pointsize>10</pointsize>
+       <pointsize>9</pointsize>
        <italic>false</italic>
-      
+       <bold>false</bold>
       </font>
      </property>
      <property name="cursor">
@@ -1116,7 +1089,20 @@ QScrollBar::sub-line:vertical {
       <string>Click here to have a quick look with graphs.</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">font: 600 10pt &quot;SF Pro Text&quot;</string>
+      <string notr="true">
+#show_graph_btn_2 {
+	background-color:rgb(0,125,27);
+	border-radius: 10px;
+	color: #fff;
+	font: 9pt &quot;SF Pro Text&quot;;
+	padding: 8px;
+}
+
+#show_graph_btn_2:hover {
+	background-color:rgb(64,156,255);
+}
+
+</string>
      </property>
      <property name="text">
       <string>Report</string>
@@ -1132,12 +1118,7 @@ QScrollBar::sub-line:vertical {
   </widget>
  </widget>
  <tabstops>
-  <tabstop>transaction_ID</tabstop>
-  <tabstop>date_input</tabstop>
-  <tabstop>select_income_btn</tabstop>
-  <tabstop>select_expense_btn</tabstop>
   <tabstop>amount_input</tabstop>
-  <tabstop>remarks_input</tabstop>
   <tabstop>save_button</tabstop>
   <tabstop>update_button</tabstop>
   <tabstop>delete_button</tabstop>
@@ -1151,8 +1132,9 @@ QScrollBar::sub-line:vertical {
   <tabstop>view_button</tabstop>
   <tabstop>display_area</tabstop>
   <tabstop>show_graph_btn</tabstop>
-  <tabstop>signout_button</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

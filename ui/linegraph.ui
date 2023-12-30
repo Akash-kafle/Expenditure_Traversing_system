@@ -68,6 +68,8 @@
      <font>
       <family>SF Pro Text</family>
       <pointsize>-1</pointsize>
+      <italic>false</italic>
+      <fontweight>Black</fontweight>
      </font>
     </property>
     <property name="styleSheet">
@@ -183,7 +185,7 @@ font: 9pt &quot;SF Pro Display&quot;;
       <string notr="true">font: 9pt &quot;SF Pro Display&quot;;</string>
      </property>
      <property name="text">
-      <string>expense</string>
+      <string>Expense</string>
      </property>
     </widget>
     <widget class="QPushButton" name="view_btn">
@@ -246,7 +248,7 @@ font: 9pt &quot;SF Pro Display&quot;;
       <string notr="true">font: 9pt &quot;SF Pro Display&quot;;</string>
      </property>
      <property name="text">
-      <string>income</string>
+      <string>Income</string>
      </property>
     </widget>
     <widget class="QComboBox" name="select_month_menu">

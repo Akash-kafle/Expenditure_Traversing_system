@@ -84,11 +84,10 @@ void ForgotPassword::on_show_hide_pwd_btn_toggled(bool checked)
 
 void ForgotPassword::on_reset_button_clicked()
 {
-        QString username=ui->username_input->text();
+        QString username= ui->username_input->text();
         QString password = ui->new_password_input->text();
-
-//        QRegularExpression username_pattern("[a-zA-Z0-9_]");
-//        QRegularExpressionMatch username_valid = username_pattern.match(username);
+      QRegularExpression username_pattern("[a-zA-Z0-9_]");
+     QRegularExpressionMatch username_valid = username_pattern.match(username);
 
         QRegularExpression password_pattern("^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@#$%^&-+=()])(?=\\S+$).*$");
         QRegularExpressionMatch password_valid = password_pattern.match(password);
@@ -104,13 +103,15 @@ void ForgotPassword::on_reset_button_clicked()
 
                 QString ans_1 = ui->qs_1_input->text();
                 QString ans_2=ui->qs_2_input->text();
-                encrypt(ans_1);
-                encrypt(ans_2);
+
 
                 db_conn_open();
                 QSqlQuery qry;
 
-                qry.prepare("SELECT * FROM credentials WHERE username = '" + username + "' AND `ans1` = '" + ans_1 + "' AND `ans2` = '" + ans_2 + "'");
+                qry.prepare("SELECT * FROM credentials WHERE username = :username AND ans1 = :ans1 AND ans2 = :ans2");
+                qry.bindValue(":username", username);
+                qry.bindValue(":ans1", ans_1);
+                qry.bindValue(":ans2", ans_2);
 
                 int count = 0;
                 if (qry.exec()){
@@ -118,16 +119,21 @@ void ForgotPassword::on_reset_button_clicked()
                         count++;
                     }
                 }
+                else{
+                    qDebug()<<qry.lastError().text();
+                    db_conn_close();
+                    return;
+                }
 
                 if(count == 1)
                 {
-                    qry.prepare("UPDATE credentials SET password = '" + password + "' WHERE username = '" + username + "' AND `ans1` = '" + ans_1 + "' AND `ans2` = '" + ans_2 + "'");
+                    qry.prepare("UPDATE credentials SET password = '" + password + "' WHERE username = '" + username + "' AND ans1 = '" + ans_1 + "' AND ans2 = '" + ans_2 + "'");
                     qry.exec();
                     QMessageBox::information(this,tr("Woo-hoo!"),tr("Password reset successfully."));
                     db_conn_close();
 
                     //QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("temp.txt");
-                    QString temp_file_path = "C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/Expenditure_Traversing_system/main/temp.txt";
+                    QString temp_file_path = "C:/Users/97798/Desktop/QTP1/Expenditure_Traversing_system/main/text.txt";
                     //qDebug() << temp_file_path;
                     QFile file(temp_file_path);
 
@@ -143,12 +149,14 @@ void ForgotPassword::on_reset_button_clicked()
 
                     //hide();
                     close();
-                    show_main_window = new MainWindow(this);
-                    show_main_window->show();
+
+
+                    Login *login = new Login(this);
+                    login->show();
                 }
 
                 else
-                {
+                {   qDebug()<<qry.lastError().text();
                     QMessageBox::warning(this, "Password reset failed", "Your username or security answers do not match. Please try again.");
                     db_conn_close();
                 }

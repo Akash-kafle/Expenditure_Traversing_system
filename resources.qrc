@@ -27,5 +27,6 @@
         <file>img/logout.png</file>
         <file>img/phone.png</file>
         <file>img/name.png</file>
+        <file>img/report.png</file>
     </qresource>
 </RCC>

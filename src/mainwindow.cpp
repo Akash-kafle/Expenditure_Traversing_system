@@ -147,6 +147,11 @@ void MainWindow::set_icons()
     ui->delete_button->setIcon(delete_icon);
     ui->delete_button->setIconSize(QSize(24, 24));
 
+    QPixmap report_pixmap(":/img/img/report.png");
+    QIcon report_icon(save_pixmap);
+    ui->show_graph_btn_2->setIcon(save_icon);
+    ui->show_graph_btn_2->setIconSize(QSize(24, 24));
+
     QPixmap view_pixmap(":/img/img/eye.png");
     QIcon view_icon(view_pixmap);
     ui->view_button->setIcon(view_icon);
@@ -186,32 +191,7 @@ void MainWindow::set_icons()
 void MainWindow::on_save_button_clicked()
 {
     QVariant date = QDate::currentDate().toString();
-    /*QString id = ui->transaction_ID->text();
-    int id_empty = id.isEmpty();
 
-    QString date = QDate::currentDate().toString();
-    int date_empty = date.isEmpty();
-
-    QString name = ui->name_input->text();
-    int name_empty = name.isEmpty();
-
-    QString address = ui->address_input->text();
-    int address_empty = address.isEmpty();
-
-    QString phone = ui->phone_input->text();
-    int phone_empty = phone.isEmpty();
-
-    QString amount_1 = ui->amount1_input->text();
-    int amount_1_empty = amount_1.isEmpty();
-
-    QString amount_2 = ui->amount2_input->text();
-    int amount_2_empty = amount_2.isEmpty();
-
-    double amount_3_number = amount_1.toDouble() - amount_2.toDouble();
-    QString amount_3 = QString::number(amount_3_number, 'f', 2);
-    int amount_3_empty = amount_3.isEmpty();
-
-    QString remarks = ui->remarks_input->text();*/
     bool all{};
 
     QVariant  reason, id, amount;

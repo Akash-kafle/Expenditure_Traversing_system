@@ -179,7 +179,7 @@ font: 10pt &quot;SF Pro Display&quot;;</string>
      <property name="font">
       <font>
        <family>SF Pro Display</family>
-       <pointsize>-1</pointsize>
+       <pointsize>9</pointsize>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -190,7 +190,7 @@ font: 10pt &quot;SF Pro Display&quot;;</string>
      <property name="styleSheet">
       <string notr="true">#registerPasswordInput {
 	padding: 10px;
-	font-size: 20px;
+	font-size: 9pt;
 	color: #374957;
 }
 
@@ -201,8 +201,17 @@ font: 10pt &quot;SF Pro Display&quot;;</string>
      <property name="echoMode">
       <enum>QLineEdit::Normal</enum>
      </property>
+     <property name="dragEnabled">
+      <bool>false</bool>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
      <property name="placeholderText">
       <string>Password</string>
+     </property>
+     <property name="clearButtonEnabled">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QLabel" name="registerPasswordIcon">

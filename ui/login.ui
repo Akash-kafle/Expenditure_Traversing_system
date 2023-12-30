@@ -221,7 +221,7 @@ font: 10pt &quot;SF Pro Display&quot;;</string>
      <property name="font">
       <font>
        <family>SF Pro Display</family>
-       <pointsize>-1</pointsize>
+       <pointsize>10</pointsize>
        <italic>false</italic>
        <bold>false</bold>
       </font>
@@ -232,7 +232,7 @@ font: 10pt &quot;SF Pro Display&quot;;</string>
      <property name="styleSheet">
       <string notr="true">#loginPasswordInput {
 	padding: 10px;
-	font-size: 20px;
+	font-size: 10pt;
 	color: #374957;
 }
 
