@@ -68,7 +68,6 @@
      <font>
       <family>SF Pro Text</family>
       <pointsize>-1</pointsize>
-      <italic>false</italic>
      </font>
     </property>
     <property name="styleSheet">

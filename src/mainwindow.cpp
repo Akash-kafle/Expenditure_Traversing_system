@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(), // parent was passed he
     ui->setupUi(this);
 
     // file stuffs
-    QFile file("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/Expenditure_Traversing_system/main/temp.txt"); // change path for your system
+    QFile file("C:/Users/97798/Desktop/QTP1/Expenditure_Traversing_system/main/temp.txt"); // change path for your system
     QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("text.txt");
     qDebug() << temp_file_path;
 

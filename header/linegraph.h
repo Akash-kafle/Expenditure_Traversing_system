@@ -27,7 +27,7 @@ public:
     bool db_conn_open()
     {
         main_db = QSqlDatabase::addDatabase("QSQLITE");
-        main_db.setDatabaseName("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/Expenditure_Traversing_system/main/main.db");//change path for your system
+        main_db.setDatabaseName("C:/Users/97798/Desktop/QTP1/Expenditure_Traversing_system/main/main.db");//change path for your system
 
         QString db_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("main.db");
         qDebug() << db_path;

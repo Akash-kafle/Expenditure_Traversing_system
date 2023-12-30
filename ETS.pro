@@ -52,4 +52,4 @@ RESOURCES += \
     resources.qrc \
     resources.qrc
 
-win32:RC_ICONS += C:\Users\aakas\OneDrive\Desktop\folders\programming\C++,C\Uni_project\Expenditure_Traversing_system\img\logo.ico
+win32:RC_ICONS += C:\Users\97798\Desktop\QTP1\Expenditure_Traversing_system\img\logo.ico

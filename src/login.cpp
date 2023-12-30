@@ -96,7 +96,7 @@ void Login::on_loginButton_clicked()
            qDebug() << "Correct username and password";
             MainWindow::temp_username=username;
 
-           QFile file("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/Expenditure_Traversing_system/main/temp.txt");//enter actual path
+           QFile file("C:/Users/97798/Desktop/QTP1/Expenditure_Traversing_system/main/temp.txt");//enter actual path
            QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("text.txt");
            qDebug() << temp_file_path;
            //QFile file(temp_file_path);

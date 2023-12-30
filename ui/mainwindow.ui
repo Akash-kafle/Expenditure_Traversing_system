@@ -31,7 +31,7 @@
    <string>Expenditure Traversing system</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources.qrc">
+   <iconset>
     <normaloff>:/img/img/ledger_small.png</normaloff>:/img/img/ledger_small.png</iconset>
   </property>
   <property name="styleSheet">
@@ -52,7 +52,7 @@
     </property>
     <property name="styleSheet">
      <string notr="true">#frame{
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb(0, 92, 151), stop:1 rgb(54, 55, 149));
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgb(0,64,221), stop:1 rgb(40, 205, 65));
 	border-radius: 0;
 }
 
@@ -63,7 +63,8 @@
 	border: 1px solid #fff;
 	padding:5px;
 	background-color: #fff;
-	font-size: 17px;
+	
+	font: 600 17px &quot;SF Pro Display&quot;;
 	color: #374957;
 }
 
@@ -78,7 +79,6 @@
 
 #save_button, #calculate_net_amount_btn{
 	border-radius: 8px;
-	font-weight: bold;
 	background-color: #32D736;
 	font-size: 17px;
 	color: #fff;
@@ -98,7 +98,6 @@
 	border: 2px solid  #88B2CC;
 	border-radius: 8px;
 	background-color: #88B2CC;
-	font-weight: bold;
 	font-size: 17px;
 	color: #fff;
 	padding: 8px;
@@ -113,7 +112,6 @@
 	border: 2px solid #f77062;
 	border-radius: 8px;
 	background-color: transparent;
-	font-weight: bold;
 	font-size: 17px;
 	color: #f77062;
 	padding: 8px;
@@ -157,16 +155,17 @@ qproperty-alignment: AlignCenter;</string>
     <widget class="QPushButton" name="save_button">
      <property name="geometry">
       <rect>
-       <x>37</x>
+       <x>60</x>
        <y>780</y>
-       <width>93</width>
+       <width>91</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Lato</family>
+       <family>SF Pro Text</family>
        <pointsize>-1</pointsize>
+       <italic>false</italic>
        <bold>true</bold>
       </font>
      </property>
@@ -197,14 +196,17 @@ qproperty-alignment: AlignCenter;</string>
      </property>
      <property name="font">
       <font>
-       <family>Lato</family>
+       <family>SF Pro Display</family>
+       <pointsize>10</pointsize>
+       <italic>false</italic>
+      
       </font>
      </property>
      <property name="toolTip">
       <string/>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">font: 600 10pt &quot;SF Pro Display&quot;;</string>
      </property>
      <property name="placeholderText">
       <string/>
@@ -221,15 +223,17 @@ qproperty-alignment: AlignCenter;</string>
      </property>
      <property name="font">
       <font>
-       <family>Lato</family>
-       <pointsize>-1</pointsize>
+       <family>SF Pro Display</family>
+       <pointsize>10</pointsize>
+       <italic>false</italic>
+      
       </font>
      </property>
      <property name="toolTip">
       <string>Enter remarks.</string>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">font: 600 10pt &quot;SF Pro Display&quot;;</string>
      </property>
      <property name="text">
       <string/>
@@ -249,14 +253,14 @@ qproperty-alignment: AlignCenter;</string>
      </property>
      <property name="font">
       <font>
-       <family>Lato</family>
+       <family>SF Pro Display</family>
        <pointsize>-1</pointsize>
-       <bold>true</bold>
+       <italic>false</italic>
+      
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">font-size: 17px;
-font-weight: bold;
+      <string notr="true">font: 600 17px &quot;SF Pro Display&quot;;
 color: #fff;
 background-color: transparent;</string>
      </property>
@@ -282,7 +286,6 @@ background-color: transparent;</string>
      </property>
      <property name="styleSheet">
       <string notr="true">font-size: 30px;
-font-weight: bold;
 padding: 5px 5px 5px 0;
 color: #fff;
 background-color: transparent;</string>
@@ -302,15 +305,17 @@ background-color: transparent;</string>
      </property>
      <property name="font">
       <font>
-       <family>Lato</family>
-       <pointsize>-1</pointsize>
+       <family>SF Pro Display</family>
+       <pointsize>10</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
       </font>
      </property>
      <property name="toolTip">
       <string>Transaction ID must be a positive integer.</string>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">font:  10pt &quot;SF Pro Display&quot;;</string>
      </property>
      <property name="placeholderText">
       <string>Transaction ID</string>
@@ -351,15 +356,17 @@ qproperty-alignment: AlignCenter;</string>
      </property>
      <property name="font">
       <font>
-       <family>Lato</family>
-       <pointsize>-1</pointsize>
+       <family>SF Pro Display</family>
+       <pointsize>10</pointsize>
+       <italic>false</italic>
+      
       </font>
      </property>
      <property name="toolTip">
       <string>Date of transaction.</string>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">font: 600 10pt &quot;SF Pro Display&quot;;</string>
      </property>
      <property name="placeholderText">
       <string>YYYY-MM-DD</string>
@@ -368,17 +375,18 @@ qproperty-alignment: AlignCenter;</string>
     <widget class="QPushButton" name="delete_button">
      <property name="geometry">
       <rect>
-       <x>259</x>
+       <x>280</x>
        <y>780</y>
-       <width>105</width>
+       <width>111</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Lato</family>
-       <pointsize>-1</pointsize>
-       <bold>true</bold>
+       <family>SF Pro Text</family>
+       <pointsize>10</pointsize>
+       <italic>false</italic>
+      
       </font>
      </property>
      <property name="cursor">
@@ -388,7 +396,7 @@ qproperty-alignment: AlignCenter;</string>
       <string>Click here to delete the record.</string>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">font: 600 10pt &quot;SF Pro Text&quot;</string>
      </property>
      <property name="text">
       <string>  Delete</string>
@@ -408,14 +416,14 @@ qproperty-alignment: AlignCenter;</string>
      </property>
      <property name="font">
       <font>
-       <family>Lato</family>
+       <family>SF Pro Display</family>
        <pointsize>-1</pointsize>
-       <bold>true</bold>
+       <italic>false</italic>
+      
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">font-size: 17px;
-font-weight: bold;
+      <string notr="true">font: 600 17px &quot;SF Pro Display&quot;;
 color: #fff;
 background-color: transparent;</string>
      </property>
@@ -434,14 +442,14 @@ background-color: transparent;</string>
      </property>
      <property name="font">
       <font>
-       <family>Lato</family>
+       <family>SF Pro Display</family>
        <pointsize>-1</pointsize>
-       <bold>true</bold>
+       <italic>false</italic>
+      
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">font-size: 17px;
-font-weight: bold;
+      <string notr="true">font: 600 17px &quot;SF Pro Display&quot;;
 color: #fff;
 background-color: transparent;</string>
      </property>
@@ -484,12 +492,14 @@ qproperty-alignment: AlignCenter;</string>
      </property>
      <property name="font">
       <font>
-       <family>Lato</family>
+       <family>SF Pro Display</family>
        <pointsize>-1</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">font-size: 30px;
+      <string notr="true">font:  30px &quot;SF Pro Display&quot;;
 padding: 5px 5px 5px 0;
 color: #fff;
 background-color: transparent;</string>
@@ -501,17 +511,18 @@ background-color: transparent;</string>
     <widget class="QPushButton" name="update_button">
      <property name="geometry">
       <rect>
-       <x>139</x>
+       <x>169</x>
        <y>780</y>
-       <width>111</width>
+       <width>101</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Lato</family>
-       <pointsize>-1</pointsize>
-       <bold>true</bold>
+       <family>SF Pro Text</family>
+       <pointsize>10</pointsize>
+       <italic>false</italic>
+      
       </font>
      </property>
      <property name="cursor">
@@ -521,7 +532,7 @@ background-color: transparent;</string>
       <string>Click here to update the record.</string>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">font: 600 10pt &quot;SF Pro Text&quot;</string>
      </property>
      <property name="text">
       <string>  Update</string>
@@ -544,17 +555,20 @@ background-color: transparent;</string>
        <widget class="QRadioButton" name="select_income_btn">
         <property name="font">
          <font>
-          <family>Lato</family>
+          <family>SF Pro Display</family>
+          <pointsize>9</pointsize>
+          <italic>false</italic>
+         
          </font>
         </property>
         <property name="toolTip">
          <string>Select me if you are dealing with a buyer.</string>
         </property>
         <property name="styleSheet">
-         <string notr="true"/>
+         <string notr="true">font: 600 9pt &quot;SF Pro Display&quot;;</string>
         </property>
         <property name="text">
-         <string>income</string>
+         <string>Income</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -565,17 +579,20 @@ background-color: transparent;</string>
        <widget class="QRadioButton" name="select_expense_btn">
         <property name="font">
          <font>
-          <family>Lato</family>
+          <family>SF Pro Display</family>
+          <pointsize>9</pointsize>
+          <italic>false</italic>
+         
          </font>
         </property>
         <property name="toolTip">
          <string>Select me if you are dealing with a seller.</string>
         </property>
         <property name="styleSheet">
-         <string notr="true"/>
+         <string notr="true">font: 600 9pt &quot;SF Pro Display&quot;;</string>
         </property>
         <property name="text">
-         <string>expense</string>
+         <string>Expense</string>
         </property>
         <property name="checked">
          <bool>false</bool>
@@ -592,6 +609,9 @@ background-color: transparent;</string>
        <width>251</width>
        <height>41</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 600 10pt &quot;SF Pro Display&quot;;</string>
      </property>
     </widget>
    </widget>
@@ -613,14 +633,12 @@ background-color: transparent;</string>
 
 #transaction_details{
 	font-size: 20px;
-	font-weight: bold;
 	color: #374957;
 	background-color: transparent;
 }
 
 #show_graph_btn, #signout_button{
 	border-radius: 8px;
-	font-weight: bold;
 	font-size: 17px;
 	padding: 8px;
 	background-color: #32D736;
@@ -717,9 +735,10 @@ background-color: transparent;</string>
      </property>
      <property name="font">
       <font>
-       <family>Lato</family>
-       <pointsize>-1</pointsize>
-       <bold>true</bold>
+       <family>SF Pro Text</family>
+       <pointsize>10</pointsize>
+       <italic>false</italic>
+      
       </font>
      </property>
      <property name="cursor">
@@ -729,7 +748,7 @@ background-color: transparent;</string>
       <string>Click here to logout from the system.</string>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">font: 600 10pt &quot;SF Pro Text&quot;</string>
      </property>
      <property name="text">
       <string>  Logout</string>
@@ -749,9 +768,10 @@ background-color: transparent;</string>
      </property>
      <property name="font">
       <font>
-       <family>Lato</family>
-       <pointsize>-1</pointsize>
-       <bold>true</bold>
+       <family>SF Pro Text</family>
+       <pointsize>10</pointsize>
+       <italic>false</italic>
+      
       </font>
      </property>
      <property name="cursor">
@@ -761,7 +781,7 @@ background-color: transparent;</string>
       <string>Click here to have a quick look with graphs.</string>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">font: 600 10pt &quot;SF Pro Text&quot;</string>
      </property>
      <property name="text">
       <string>  Graph</string>
@@ -827,7 +847,6 @@ background-color: transparent;</string>
 
 #view_button, #export_csv_btn{
 	border-radius: 8px;
-	font-weight: bold;
 	font-size: 17px;
 	color: #fff;
 	padding: 8px;
@@ -1041,9 +1060,10 @@ QScrollBar::sub-line:vertical {
      </property>
      <property name="font">
       <font>
-       <family>Lato</family>
-       <pointsize>-1</pointsize>
-       <bold>true</bold>
+       <family>SF Pro Text</family>
+       <pointsize>10</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
       </font>
      </property>
      <property name="cursor">
@@ -1053,7 +1073,7 @@ QScrollBar::sub-line:vertical {
       <string>Displays transaction records.</string>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">font: 10pt &quot;SF Pro Text&quot;</string>
      </property>
      <property name="text">
       <string>  View</string>
@@ -1083,8 +1103,10 @@ QScrollBar::sub-line:vertical {
      </property>
      <property name="font">
       <font>
-       <family>Lato</family>
-       <bold>true</bold>
+       <family>SF Pro Text</family>
+       <pointsize>10</pointsize>
+       <italic>false</italic>
+      
       </font>
      </property>
      <property name="cursor">
@@ -1094,10 +1116,10 @@ QScrollBar::sub-line:vertical {
       <string>Click here to have a quick look with graphs.</string>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">font: 600 10pt &quot;SF Pro Text&quot;</string>
      </property>
      <property name="text">
-      <string>report</string>
+      <string>Report</string>
      </property>
      <property name="shortcut">
       <string>Ctrl+G</string>
@@ -1131,8 +1153,6 @@ QScrollBar::sub-line:vertical {
   <tabstop>show_graph_btn</tabstop>
   <tabstop>signout_button</tabstop>
  </tabstops>
- <resources>
-  <include location="../resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

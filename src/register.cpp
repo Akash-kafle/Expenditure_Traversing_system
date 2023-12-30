@@ -98,7 +98,7 @@ void Register::on_registerButton_clicked()
             if (add_table_income.exec() && add_table_expense.exec()){
                 qDebug() << "New tables added";
 
-                QFile file("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/Expenditure_Traversing_system/main/temp.txt");
+                QFile file("C:/Users/97798/Desktop/QTP1/Expenditure_Traversing_system/main/temp.txt");
                 QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("temp.txt");
                 qDebug() << temp_file_path;
 
