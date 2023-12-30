@@ -9,7 +9,7 @@ The project was done for the fulfillment of ENGG 102 (2nd Semester Project).
     1. Ashraya kadel
     2. Akash kafle
     3. Parth pandit
-    $. Sammit poudel
+    $. Sammit poudyal
   
  ### What have we used?
    * [C++](https://cppreference.com "C++ Reference")
