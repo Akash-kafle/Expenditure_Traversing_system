@@ -115,6 +115,10 @@ private slots:
     double calculateCosineSimilarity(const QMap<QString, double>& vector1, const QMap<QString, double>& vector2);
     double calculateMagnitude(const QMap<QString, double>& vector);
     double calculateDotProduct(const QMap<QString, double>& vector1, const QMap<QString, double>& vector2);
+    void processData(const QList<Transaction>& transactions, const QString& temp_username);
+    void collectData(QList<Transaction>& transactions, const QString& temp_username);
+    void writeToPDF(const QList<Transaction>& transactions, const QString& temp_username, QString& filePath);
+
 
 private:
 

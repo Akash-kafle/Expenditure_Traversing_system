@@ -434,7 +434,7 @@ background-color: transparent;</string>
       <pixmap resource="../resources.qrc">:/img/img/ru.png</pixmap>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit">
+    <widget class="QLineEdit" name="remarks_input">
      <property name="geometry">
       <rect>
        <x>80</x>

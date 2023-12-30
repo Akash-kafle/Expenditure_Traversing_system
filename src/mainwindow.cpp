@@ -3,6 +3,11 @@
 #include <QtDebug>
 #include <QMessageBox>
 #include <QBEInteger>
+#include <QPieSlice>
+#include<QtCharts/QPieSeries>
+#include <QtCharts/QtCharts>
+//#include
+
 
 // #include <QIntValidator>
 QString MainWindow::temp_username;
@@ -18,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(), // parent was passed he
     ui->setupUi(this);
 
     // file stuffs
-    QFile file("C:/Users/97798/Desktop/QTP1/Expenditure_Traversing_system/main/temp.txt"); // change path for your system
+    QFile file("C:/Users/97798/Desktop/QTP1/Expenditure_Traversing_system/main/text.txt"); // change path for your system
     QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("text.txt");
     qDebug() << temp_file_path;
 
@@ -147,11 +152,6 @@ void MainWindow::set_icons()
     ui->delete_button->setIcon(delete_icon);
     ui->delete_button->setIconSize(QSize(24, 24));
 
-    QPixmap report_pixmap(":/img/img/report.png");
-    QIcon report_icon(save_pixmap);
-    ui->show_graph_btn_2->setIcon(save_icon);
-    ui->show_graph_btn_2->setIconSize(QSize(24, 24));
-
     QPixmap view_pixmap(":/img/img/eye.png");
     QIcon view_icon(view_pixmap);
     ui->view_button->setIcon(view_icon);
@@ -191,15 +191,42 @@ void MainWindow::set_icons()
 void MainWindow::on_save_button_clicked()
 {
     QVariant date = QDate::currentDate().toString();
+    /*QString id = ui->transaction_ID->text();
+    int id_empty = id.isEmpty();
 
+    QString date = QDate::currentDate().toString();
+    int date_empty = date.isEmpty();
+
+    QString name = ui->name_input->text();
+    int name_empty = name.isEmpty();
+
+    QString address = ui->address_input->text();
+    int address_empty = address.isEmpty();
+
+    QString phone = ui->phone_input->text();
+    int phone_empty = phone.isEmpty();
+
+    QString amount_1 = ui->amount1_input->text();
+    int amount_1_empty = amount_1.isEmpty();
+
+    QString amount_2 = ui->amount2_input->text();
+    int amount_2_empty = amount_2.isEmpty();
+
+    double amount_3_number = amount_1.toDouble() - amount_2.toDouble();
+    QString amount_3 = QString::number(amount_3_number, 'f', 2);
+    int amount_3_empty = amount_3.isEmpty();
+
+    QString remarks = ui->remarks_input->text();*/
     bool all{};
 
-    QVariant  reason, id, amount;
+    QVariant  reason, id, amount,remarks;
     id = ui->transaction_ID->text().toInt();
     date = ui->date_input->text();
     reason = ui->reason_of_transaction->currentText();
     amount = ui->amount_input->text().toInt();
-    all = id.isNull()||date.isNull()||reason.isNull()||amount.isNull();
+    remarks = ui->remarks_input->text();
+
+    all = id.isNull()||date.isNull()||reason.isNull()||amount.isNull()||remarks.isNull();
     if (!db_conn_open())
     {
         qDebug() << "Database connection failed";
@@ -223,11 +250,12 @@ void MainWindow::on_save_button_clicked()
 
         if (!tableName.isEmpty())
         {
-            save_query.prepare("INSERT INTO " + tableName + " (`id`, date, reason, amount) VALUES (:id, :date, :reason, :amount)");
+            save_query.prepare("INSERT INTO " + tableName + " (`id`, date, reason, amount,remarks) VALUES (:id, :date, :reason, :amount,:remarks)");
             save_query.bindValue(":id", id);
             save_query.bindValue(":date",date);
             save_query.bindValue(":reason", reason);
             save_query.bindValue(":amount", amount);
+            save_query.bindValue(":remarks", remarks);
 
             if (save_query.exec())
             {
@@ -298,7 +326,7 @@ void MainWindow::on_update_button_clicked()
         bool all{};
 
         QString id = ui->transaction_ID->text();
-        QString date = QDate::currentDate().toString();
+        QString date = ui->date_input->text();
         // QString name = ui->name_input->text();
         // int name_empty = name.isEmpty();
         QString amount = ui->amount_input->text();
@@ -312,8 +340,10 @@ void MainWindow::on_update_button_clicked()
         int amount_3_empty = amount_3.isEmpty();
 
         QString remarks = ui->remarks_input->text();
-*/
-        all = id.isEmpty() || date.isEmpty() || amount.isEmpty();
+*/      QString reason = ui->reason_of_transaction->currentText();
+        QString remarks = ui->remarks_input->text();
+        all = id.isEmpty() || date.isEmpty() || amount.isEmpty()||reason.isEmpty()||remarks.isEmpty();
+
         if (!db_conn_open())
         {
             qDebug() << "Failed to Open The Database";
@@ -324,16 +354,16 @@ void MainWindow::on_update_button_clicked()
         {
             db_conn_open();
 
-            QString income_or_expense, reason;
+            QString income_or_expense;
             if (ui->select_expense_btn->isChecked())
             {
-                income_or_expense = temp_username + "_ex";
-                reason = ui->reason_of_transaction->currentText();
+                income_or_expense = MainWindow::temp_username + "_ex";
+
             }
             else if (ui->select_income_btn->isChecked())
             {
-                income_or_expense = temp_username + "_in";
-                reason = ui->reason_of_transaction->currentText();
+                income_or_expense = MainWindow::temp_username + "_in";
+
             }
 
             QSqlQuery check_transaction_id_qry;
@@ -352,10 +382,10 @@ void MainWindow::on_update_button_clicked()
             { // if the given transaction id is found
                 QSqlQuery update_qry;
 
-                if (ui->select_income_btn->isChecked())
-                    update_qry.prepare("UPDATE " + income_or_expense + " SET `id`= `"+id+"` date = '" + date + "' reason = '" + reason +"' amount = `"+amount+"` WHERE `id` = `" + id+"`");
+                if (ui->select_income_btn->isChecked()){
+                    update_qry.prepare("UPDATE " + income_or_expense + " SET date = '" + date + "' reason = '" + reason +"' amount = `"+amount+"` remarks = "+remarks+" WHERE `id` = `" + id+"`");}
                 else if (ui->select_expense_btn->isChecked())
-                    update_qry.prepare("UPDATE " + income_or_expense + " SET `id`=`"+id+"` date = '" + date + "' reason = '" + reason + "' amount = `"+amount+"` WHERE `id` = `" + id+"`");
+                {update_qry.prepare("UPDATE " + income_or_expense + " SET  date = '" + date + "' reason = '" + reason + "' amount = `"+amount+"` remarks = "+remarks+" WHERE `id` = `" + id+"`");}
                 if (update_qry.exec())
                 {
                     QMessageBox::information(this, tr(" "), tr("Record has been updated successfully."));
@@ -674,8 +704,7 @@ void MainWindow::on_show_graph_btn_clicked()
 {
     QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("temp.txt");
     qDebug() << temp_file_path;
-    QFile file("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/Expenditure_traversing_system/main/text.txt");
-
+    QFile file("C:/Users/97798/Desktop/QTP1/Expenditure_Traversing_system/main/text.txt");
     if (!file.open(QFile::WriteOnly | QFile::Text))
     {
         qDebug() << "File not opened";
@@ -791,275 +820,19 @@ void MainWindow::createFinancialReport( QString &filePath)
 {
 
     QList<Transaction> transactions;
-    QSqlQuery query;
-    // Open the SQLite database
-    db_conn_open();
-    if (!main_db.open())
-    {
-        qDebug() << "Failed to open database";
-        return;
-    }
-    qDebug()<< QSqlDatabase::drivers();
-    filePath = QFileDialog::getSaveFileName(this, "Save PDF", "", "*.pdf");
-    QFile file(filePath);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
-    {
-        qDebug() << "Cannot open file for reading: " << qPrintable(file.errorString());
-    }
 
-    // Create a PDF writer
-    QPdfWriter pdfWriter(filePath);
-    pdfWriter.setPageSize(QPageSize(QPageSize::A4));
-    pdfWriter.setPageOrientation(QPageLayout::Portrait);
+    // Collect data from the database
+    collectData(transactions, temp_username);
 
-    // Create a painter to draw on the PDF
-    QPainter painter(&pdfWriter);
-    painter.setRenderHint(QPainter::Antialiasing);
+    // Process the data
+    processData(transactions, temp_username);
 
-    // Set up the report header
-    QFont headerFont("Arial", 14, QFont::Bold);
-    painter.setFont(headerFont);
-    painter.drawText(QRect(4000, 500, 4000, 500), Qt::AlignLeft, "Financial Report");
+    // Generate the PDF report
+    writeToPDF(transactions, temp_username, filePath);
 
-    // Set up the table headers
-    QFont tableHeaderFont("Arial", 12, QFont::Bold);
-    painter.setFont(tableHeaderFont);
-    painter.drawText(QRect(4000, 1500, 1000, 300), Qt::AlignLeft, "Date");
-    painter.drawText(QRect(5000, 1500, 1000, 300), Qt::AlignLeft, "Type");
-    painter.drawText(QRect(6000, 1500, 1000, 300), Qt::AlignLeft, "Amount");
-
-    // Set up the table rows
-    QFont tableRowFont("Arial", 10);
-    painter.setFont(tableRowFont);
-    int row = 0;
-    while (query.next())
-    {
-        QString date = query.value("date").toString();
-        QString type = query.value("reason").toString();
-        double amount = query.value("amount").toDouble();
-
-        painter.drawText(QRect(3000, 1000 + row * 150, 1000, 200), Qt::AlignLeft, date);
-        painter.drawText(QRect(4000, 1000 + row * 150, 1000, 200), Qt::AlignLeft, type);
-        painter.drawText(QRect(5000, 1000 + row * 150, 1000, 200), Qt::AlignLeft, QString::number(amount));
-
-        row++;
-    }
-    int total_inc[2],total_exp[6];
-    int i =0;
-    QDate Date = QDate::currentDate();
-
-
-    for(QString reason: list_income){
-
-        //if(query.exec("SELECT SUM(amount) FROM "+MainWindow::temp_username+"_in WHERE date < "+date+" AND reason = "+reason)){
-           // total_inc[i] = query.value(0).toInt();
-   // }
-    i++;
-    }
-    i = 0;
-    for(QString reason : list_expense){
-
-    /*if(query.exec("SELECT SUM(amount) FROM "+MainWindow::temp_username+"_ex WHERE date < "+date+" AND reason = "+reason)){
-            total_exp[i] = query.value(0).toInt();
-    }*/
-    i++;
-    }
-    double cosineSimilarity{};
-    double incomeSum = 0.0, expenseSum = 0.0, productSum = 0.0;
-    // Fetch transactions from the income table
-    QSqlQuery incomeQuery;
-    incomeQuery.prepare(QString("SELECT * FROM %1_in").arg(temp_username));
-    if (!incomeQuery.exec())
-    {
-        qDebug() << "Failed to execute query";
-        return;
-    }
-    while (incomeQuery.next())
-    {
-        Transaction transaction;
-        transaction.date = incomeQuery.value("date").toDate();
-        transaction.type = "income";
-        transaction.reason = incomeQuery.value("reason").toString();
-        transaction.amount = incomeQuery.value("amount").toDouble();
-        transactions.append(transaction);
-    }
-
-    // Fetch transactions from the expense table
-    QSqlQuery expenseQuery;
-    expenseQuery.prepare(QString("SELECT * FROM %1_ex").arg(temp_username));
-    if (!expenseQuery.exec())
-    {
-        qDebug() << "Failed to execute query";
-        return;
-    }
-    while (expenseQuery.next())
-    {
-        Transaction transaction;
-        transaction.date = expenseQuery.value("date").toDate();
-        transaction.type = "expense";
-        transaction.reason = expenseQuery.value("reason").toString();
-        transaction.amount = expenseQuery.value("amount").toDouble();
-        transactions.append(transaction);
-    }
-
-    // Calculate the total for each income and expense reason
-    QMap<QString, double> totals;
-
-    double totalIncome = 0.0;
-    int numIncomeTransactions = 0;
-    for (Transaction transaction : transactions)
-    {
-        if (transaction.type == "income")
-        {
-            totalIncome += transaction.amount;
-            numIncomeTransactions++;
-        }
-    }
-    double averageIncome = totalIncome / numIncomeTransactions;
-    // Calculate totals for income and expense categories
-    QStringList reasons = {"family", "personal", "food", "rent", "travel", "study", "entertainment", "other"};
-    QMap<QString, double> incomeTotals = calculateCategoryTotals(temp_username, reasons, "in");
-    QMap<QString, double> expenseTotals = calculateCategoryTotals(temp_username, reasons, "ex");
-
-    // Calculate cosine similarity between income and expense vectors
-    cosineSimilarity = calculateCosineSimilarity(incomeTotals, expenseTotals);
-
-    // Write the cosine similarity to the PDF
-    const int TEXT_X = 2000;
-    const int TEXT_Y = 5600;
-    const int PIE_RADIUS = 1000;
-    const int PIE_X = 4000;
-    const int PIE_Y_OFFSET = 4800;
-    const int ROW_HEIGHT = 4000;
-    const int PIE_Y_EXTRA = 4000;
-    const int ANGLE_MULTIPLIER = 1600;
-    const int RECT_WIDTH = 1000;
-    const int RECT_HEIGHT = 1000;
-    const int TOTAL_X = 500;
-    const int TOTAL_WIDTH = 1000;
-    const int ANALYSIS_Y_EXTRA = 4000;
-    const int ANALYSIS_WIDTH = 2000;
-    const int ANALYSIS_HEIGHT = 2000;
-    QFont analysisFont("Arial", 10);
-    painter.setFont(analysisFont);
-    int analysisY = PIE_Y_OFFSET + totals.size() * ROW_HEIGHT + ANALYSIS_Y_EXTRA;
-    painter.drawText(QRect(TEXT_X, analysisY, ANALYSIS_WIDTH, ANALYSIS_HEIGHT), Qt::AlignLeft,
-                     "Cosine Similarity between Income and Expense: " + QString::number(cosineSimilarity));
-
-
-    // Calculate the median income
-    QList<double> incomes;
-    for (Transaction transaction : transactions)
-    {
-        if (transaction.type == "income")
-        {
-            incomes.append(transaction.amount);
-        }
-    }
-    std::sort(incomes.begin(), incomes.end());
-    double medianIncome = incomes[incomes.size() / 2];
-
-    // Calculate the standard deviation of the income
-    double sumOfSquares = 0.0;
-    for (double income : incomes)
-    {
-        double deviation = income - averageIncome;
-        sumOfSquares += deviation * deviation;
-    }
-    double variance = sumOfSquares / (incomes.size() - 1);
-    double standardDeviation = std::sqrt(variance);
-
-    // Fetch the total income from the previous period from the database
-
-    query.prepare(QString("SELECT SUM(amount) FROM %1_in WHERE date < :startDate").arg(temp_username));
-    query.bindValue(":startDate", QDate::currentDate()); // startDate is the start date of the current period
-    if (!query.exec() || !query.next())
-    {
-        qDebug() << "Failed to fetch total income from the previous period";
-        if(QMessageBox::question(this,"Confirm","Previous period income not found would you like to continue")==QMessageBox::No){
-            return;}
-    }
-    double previousPeriodIncome = query.value(0).toDouble();
-    double percentageChange;
-    // Calculate the percentage change in income from the previous period
-    if(previousPeriodIncome!=0){
-        double percentageChange = (incomeSum - previousPeriodIncome) / previousPeriodIncome * 100.0;
-    }
-    double allTotals = 0.0;
-    for (double total : totals.values())
-    {
-        allTotals += total;
-    }
-    // Set up the font
-    QFont font = painter.font();
-    font.setPointSize(12);
-    painter.setFont(font);
-
-    // Draw the average income
-    QString averageIncomeText = QString("Average income: %1").arg(averageIncome);
-    painter.drawText(3000, 1500, averageIncomeText);
-
-    // Draw the median income
-    QString medianIncomeText = QString("Median income: %1").arg(medianIncome);
-    painter.drawText(3000, 2000, medianIncomeText);
-
-    // Draw the standard deviation of the income
-    QString standardDeviationText = QString("Standard deviation of income: %1").arg(standardDeviation);
-    painter.drawText(3000, 2500, standardDeviationText);
-
-
-
-    // Draw the percentage change in income from the previous period
-    QString percentageChangeText = QString("Percentage change in income from the previous period: %1%").arg(percentageChange);
-    painter.drawText(TEXT_X, TEXT_Y, percentageChangeText);
-
-    // Draw a pie slice for each category
-    double startAngle = 0.0;
-    int pieY = PIE_Y_OFFSET + ROW_HEIGHT;  // Adjust position for pie chart
-    for (int i = 0; i < incomeTotals.size(); ++i)
-    {
-        QString category = incomeTotals.keys()[i];
-        double total = incomeTotals[category];
-        double sliceAngle = total / totalIncome * 360.0;
-        painter.drawPie(PIE_X, pieY, PIE_RADIUS * 2, PIE_RADIUS * 2, startAngle * ANGLE_MULTIPLIER, sliceAngle * ANGLE_MULTIPLIER);
-        startAngle += sliceAngle;
-    }
-
-    pieY += ROW_HEIGHT + PIE_Y_EXTRA;  // Adjust position for expense pie chart
-    for (int i = 0; i < expenseTotals.size(); ++i)
-    {
-        QString category = expenseTotals.keys()[i];
-        double total = expenseTotals[category];
-        double sliceAngle = total / allTotals * 360.0;
-        painter.drawPie(PIE_X, pieY, PIE_RADIUS * 2, PIE_RADIUS * 2, startAngle * ANGLE_MULTIPLIER, sliceAngle * ANGLE_MULTIPLIER);
-        startAngle += sliceAngle;
-    }
-
-
-
-    // Write each title and total to the PDF
-    QFont categoryFont("Arial", 10);
-    painter.setFont(categoryFont);
-    for (int i = 0; i < totals.size(); ++i)
-    {
-        QString title = totals.keys()[i];
-        double total = totals[title];
-        int rowY = PIE_Y_OFFSET + i * ROW_HEIGHT;
-        painter.drawText(QRect(TEXT_X, rowY, RECT_WIDTH, RECT_HEIGHT), Qt::AlignLeft, title);
-        painter.drawText(QRect(TOTAL_X, rowY, TOTAL_WIDTH, RECT_HEIGHT), Qt::AlignLeft, QString::number(total));
-    }
-
-    // Write the cosine similarity to the PDF
-    painter.setFont(analysisFont);
-    analysisY = PIE_Y_OFFSET + totals.size() * ROW_HEIGHT + ANALYSIS_Y_EXTRA;
-    painter.drawText(QRect(TEXT_X, analysisY, ANALYSIS_WIDTH, ANALYSIS_HEIGHT), Qt::AlignLeft,
-                     "Cosine Similarity between Income and Expense: " + QString::number(cosineSimilarity));
-    // End painting and close the PDF
-    painter.end();
-    db_conn_close();
-    file.close();
+    // Inform the user that the report is ready
+    QMessageBox::information(this, "Report Generated", "Financial report saved to: " + filePath);
 }
-
 QMap<QString, double> MainWindow::calculateCategoryTotals(const QString& temp_username, const QStringList& reasons, const QString& tablePrefix) {
     QMap<QString, double> totals;
 
@@ -1113,4 +886,317 @@ double MainWindow::calculateDotProduct(const QMap<QString, double>& vector1, con
     }
 
     return dotProduct;
+}
+
+
+void MainWindow::writeToPDF(const QList<Transaction>& transactions, const QString& temp_username, QString& filePath){
+    filePath = QFileDialog::getSaveFileName(this, "Save PDF", "", "*.pdf");
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+    {
+        qDebug() << "Cannot open file for reading: " << qPrintable(file.errorString());
+    }
+
+    // Create a PDF writer
+    QPdfWriter pdfWriter(filePath);
+    pdfWriter.setPageSize(QPageSize(QPageSize::A4));
+    pdfWriter.setPageOrientation(QPageLayout::Portrait);
+
+    // Create a painter to draw on the PDF
+    QPainter painter(&pdfWriter);
+    painter.setRenderHint(QPainter::Antialiasing);
+    QFont titleFont("Arial", 14, QFont::Bold);
+    QFont headerFont("Arial", 12, QFont::Bold);
+    QFont tableFont("Arial", 10);
+    int leftMargin = 1000;
+    // Set up the report header
+    painter.setFont(titleFont);
+    painter.drawText(QRect(4000, 500, 4000, 500), Qt::AlignLeft, "Financial Report");
+
+    // Set up table headers
+    painter.setFont(headerFont);
+    painter.drawText(QRect(leftMargin, 1500, 1000, 300), Qt::AlignLeft, "Date");
+    painter.drawText(QRect(leftMargin + 2000, 1500, 1000, 300), Qt::AlignLeft, "Type");
+    painter.drawText(QRect(leftMargin + 4000, 1500, 1000, 300), Qt::AlignLeft, "Amount");
+
+    // Set up table rows
+    QFont tableRowFont("Arial", 10);
+    painter.setFont(tableRowFont);
+    int row = 0;
+    int tableStartY = 2000;  // Start the table lower down the page
+    for (Transaction transaction : transactions) {
+        painter.drawText(leftMargin, tableStartY + row * 200,  transaction.date.toString());
+        painter.drawText(leftMargin + 2000, tableStartY + row * 200,  transaction.type);
+        painter.drawText(leftMargin + 4000, tableStartY + row * 200,  QString::number(transaction.amount));
+        row++;
+    }
+
+
+    // Other PDF drawing and writing operations can be added here
+
+    QPieSeries *series = new QPieSeries();
+    double totalIncome = 0;
+    double totalExpense = 0;
+    for (const Transaction& transaction : transactions) {
+        if (transaction.type == "Income") {
+            totalIncome += transaction.amount;
+        } else if (transaction.type == "Expense") {
+            totalExpense += transaction.amount;
+        }
+    }
+    series->append("Income", totalIncome);
+    series->append("Expense", totalExpense);
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+
+    // Show the chartView and ensure it has a valid size
+    chartView->resize(640, 480);  // Set a specific size for the chartView
+    chartView->show();
+    QApplication::processEvents();  // Process events to ensure chartView is shown
+
+    QImage image(chartView->size(), QImage::Format_ARGB32);
+    QPainter imagePainter(&image);
+    chartView->render(&imagePainter);
+    imagePainter.end();
+
+    // Calculate the position and size of the pie chart
+    int pieChartX = 1000;
+    int pieChartY = tableStartY + row * 200 + 1000;
+    int pieChartWidth = 6000;
+    int pieChartHeight = 6000;
+
+    // Scale the image and draw it into the PDF
+    QImage scaledImage = image.scaled(pieChartWidth, pieChartHeight, Qt::KeepAspectRatio);
+    painter.drawImage(QRect(pieChartX, pieChartY, scaledImage.width(), scaledImage.height()), scaledImage);
+    // Group transactions by reason and calculate total amount for each reason
+    std::map<std::string, double> incomeTotalsByReason, expenseTotalsByReason;
+    for (const Transaction& transaction : transactions) {
+        std::string reason = transaction.reason.toStdString();
+        if (transaction.type == "Income") {
+            incomeTotalsByReason[reason] += transaction.amount;
+        } else if (transaction.type == "Expense") {
+            expenseTotalsByReason[reason] += transaction.amount;
+        }
+    }
+
+    // Create a function to generate a chart for a given set of totals
+    auto generateChart = [](const std::map<std::string, double>& totalsByReason, const QString& title) {
+        QtCharts::QPieSeries* series = new QtCharts::QPieSeries();
+        for (const auto& pair : totalsByReason) {
+            series->append(QString::fromStdString(pair.first), pair.second);
+        }
+
+        QtCharts::QChart* chart = new QtCharts::QChart();
+        chart->setTitle(title);
+        chart->addSeries(series);
+        chart->legend()->hide();
+
+        return chart;
+    };
+    pdfWriter.newPage();
+    // Generate the income and expense charts
+    QtCharts::QChart* incomeChart = generateChart(incomeTotalsByReason, "Income Chart");
+    QtCharts::QChart* expenseChart = generateChart(expenseTotalsByReason, "Expense Chart");
+
+    // Create a chart view for each chart
+    QtCharts::QChartView* incomeChartView = new QtCharts::QChartView(incomeChart);
+    QtCharts::QChartView* expenseChartView = new QtCharts::QChartView(expenseChart);
+    incomeChartView->setRenderHint(QPainter::Antialiasing);
+    incomeChartView->resize(640, 480);
+    incomeChartView->show();
+    // Render the income chart to the PDF
+    int incomeChartX = 1000;
+    int incomeChartY = tableStartY + row * 200 + 1000;  // Adjust this to move the income chart down
+    incomeChartView->render(&painter, QRect(incomeChartX, incomeChartY, pieChartWidth, pieChartHeight));
+
+    // Render the expense chart to the PDF
+    int expenseChartX = 1000;
+    int expenseChartY = incomeChartY + pieChartHeight + 1000;  // Adjust this to move the expense chart down
+    expenseChartView->render(&painter, QRect(expenseChartX, expenseChartY, pieChartWidth, pieChartHeight));
+
+    // Draw a heading for the cosine similarity section
+    if (transactions.size() > 1) {  // Ensure enough transactions for comparison
+        QMap<QString, double> vector1, vector2;
+
+        double cosineSimilarity = calculateCosineSimilarity(vector1, vector2);
+
+        // Draw a heading for the cosine similarity section
+        painter.setFont(headerFont);
+        painter.drawText(leftMargin, pieChartY + pieChartHeight + 200, "Cosine Similarity:");  // Adjust the vertical position
+        // Draw the cosine similarity value below the pie chart
+
+        int cosineSimilarityY = pieChartY + pieChartHeight + 500; // Adjust this to move the cosine similarity down
+        painter.setFont(tableRowFont);
+        painter.drawText(leftMargin, cosineSimilarityY, QString::number(cosineSimilarity));
+
+        // Interpretation of Cosine Similarity
+        QString interpretation;
+        if (cosineSimilarity == 1) {
+            interpretation = "The cosine similarity of 1 indicates a perfect alignment between your income and expenses."
+                             " Your financial patterns are exceptionally well-balanced.";
+        } else if (cosineSimilarity > 0.8) {
+            interpretation = "With a cosine similarity exceeding 0.8,"
+                             " your spending closely mirrors your income, suggesting a well-maintained financial equilibrium.";
+        } else if (cosineSimilarity > 0.5) {
+            interpretation = "A cosine similarity above 0.5"
+                             " indicates a reasonable alignment between your income and expenses. Your financial habits are generally balanced.";
+        } else if (cosineSimilarity > 0.2) {
+            interpretation = "While the cosine similarity is above 0.2, "
+                             "there are noticeable variations between your income and spending patterns. Consider fine-tuning your budget for better alignment.";
+        } else {
+            if(vector1["income"]<vector2["expense"]){
+            interpretation = "The relatively low cosine similarity suggests a significant mismatch between your income and spending."
+                                 " It's crucial to reassess your financial strategy for better stability.";}
+            else if (vector1["income"]>vector2["expense"]){
+            interpretation = "";
+            }
+        }
+        interpretation += "This insight can guide adjustments in budgeting and financial planning. ";
+        interpretation += "Consider reassessing your expenses and identifying areas for potential savings. ";
+        interpretation += "Ensure that your financial goals align with your current spending habits. ";
+        interpretation += "Regularly monitoring and adjusting your budget can help maintain a healthier financial profile. ";
+        interpretation += "Seeking professional financial advice may offer valuable insights and strategies for improvement. ";
+        interpretation += "Remember, financial well-being is an ongoing process that benefits from proactive management. ";
+        interpretation += "Take steps to align your spending with your financial goals for a more secure future. ";
+        interpretation += "Understanding these patterns can empower you to make informed decisions for financial stability. ";
+        interpretation += "Consider creating a detailed budget to optimize your spending and savings. ";
+        interpretation += "Striving for consistency between your income and expenses contributes to long-term financial success.";
+
+        QTextOption textOption;
+        textOption.setWrapMode(QTextOption::WordWrap);
+
+        // Define the rectangle for drawing text, adjust the width as needed
+        int interpretationWidth = 8000; // Adjust the width based on your layout
+        QRect interpretationRect(leftMargin, cosineSimilarityY + 200, interpretationWidth, 2000);
+
+        // Draw the interpretation text with word wrapping
+        painter.setFont(tableRowFont);
+        painter.drawText(interpretationRect, interpretation, textOption);
+  }
+
+    // End painting and close the PDF
+    painter.end();
+    file.close();
+    chartView->close();
+}
+
+void MainWindow::processData(const QList<Transaction>& transactions, const QString& temp_username){
+    // Calculate totals for income and expense categories
+    QSqlQuery query;
+    double totalIncome = 0.0;
+    int numIncomeTransactions = 0;
+    double totalExpense = 0.0;  // Added for expense calculation
+    int numExpenseTransactions = 0;  // Added for expense calculation
+
+    for (Transaction transaction : transactions) {
+        if (transaction.type == "income") {
+            totalIncome += transaction.amount;
+            numIncomeTransactions++;
+        } else if (transaction.type == "expense") {  // Added for expense calculation
+            totalExpense += transaction.amount;
+            numExpenseTransactions++;
+        } else {
+            qDebug() << "Invalid transaction type: " << transaction.type;  // Handle invalid types
+        }
+    }
+
+    double averageIncome = totalIncome / numIncomeTransactions;
+    double averageExpense = totalExpense / numExpenseTransactions;
+
+    // Calculate totals for income and expense categories
+    QStringList reasons = {"family", "personal", "food", "rent", "travel", "study", "entertainment", "other"};
+    QMap<QString, double> incomeTotals = calculateCategoryTotals(temp_username, reasons, "in");
+    QMap<QString, double> expenseTotals = calculateCategoryTotals(temp_username, reasons, "ex");
+
+    // Calculate cosine similarity between income and expense vectors
+    double cosineSimilarity = calculateCosineSimilarity(incomeTotals, expenseTotals);
+
+    // Calculate the median income
+    QList<double> incomes;
+    for (Transaction transaction : transactions)
+    {
+        if (transaction.type == "income")
+        {
+            incomes.append(transaction.amount);
+        }
+    }
+
+    std::sort(incomes.begin(), incomes.end());
+    double medianIncome = incomes[incomes.size() / 2];
+
+    // Calculate the standard deviation of the income
+    double sumOfSquares = 0.0;
+    for (double income : incomes)
+    {
+        double deviation = income - averageIncome;
+        sumOfSquares += deviation * deviation;
+    }
+
+    double variance = sumOfSquares / (incomes.size() - 1);
+    double standardDeviation = std::sqrt(variance);
+
+    // Fetch the total income from the previous period from the database
+    query.prepare(QString("SELECT SUM(amount) FROM %1_in WHERE date < :startDate").arg(temp_username));
+    query.bindValue(":startDate", QDate::currentDate()); // startDate is the start date of the current period
+    if (!query.exec() || !query.next())
+    {
+        qDebug() << "Failed to fetch total income from the previous period";
+        if(QMessageBox::question(this,"Confirm","Previous period income not found would you like to continue")==QMessageBox::No){
+            return;}
+    }
+    double previousPeriodIncome = query.value(0).toDouble();
+    double percentageChange;
+
+    // Calculate the percentage change in income from the previous period
+    if(previousPeriodIncome!=0){
+        double percentageChange = (totalIncome - previousPeriodIncome) / previousPeriodIncome * 100.0;
+    }
+
+}
+
+void MainWindow::collectData(QList<Transaction>& transactions, const QString& temp_username) {
+    QSqlQuery query;
+
+    // Open the SQLite database
+    db_conn_open();
+    if (!main_db.open()) {
+        qDebug() << "Failed to open database";
+        return;
+    }
+
+    // Fetch transactions from the income table
+    QSqlQuery incomeQuery;
+    incomeQuery.prepare(QString("SELECT * FROM %1_in").arg(temp_username));
+    if (!incomeQuery.exec()) {
+        qDebug() << "Failed to execute income query: " << incomeQuery.lastError().text(); // Add error details
+        return;
+    }
+    while (incomeQuery.next()) {
+        Transaction transaction;
+        transaction.date = incomeQuery.value("date").toDate();
+        transaction.type = "income";
+        transaction.reason = incomeQuery.value("reason").toString();
+        transaction.amount = incomeQuery.value("amount").toDouble();
+        transactions.append(transaction);
+    }
+
+    // Fetch transactions from the expense table
+    QSqlQuery expenseQuery;
+    expenseQuery.prepare(QString("SELECT * FROM %1_ex").arg(temp_username));
+    if (!expenseQuery.exec()) {
+        qDebug() << "Failed to execute expense query: " << expenseQuery.lastError().text(); // Add error details
+        return;
+    }
+    while (expenseQuery.next()) {
+        Transaction transaction;
+        transaction.date = expenseQuery.value("date").toDate();
+        transaction.type = "expense";
+        transaction.reason = expenseQuery.value("reason").toString();
+        transaction.amount = expenseQuery.value("amount").toDouble();
+        transactions.append(transaction);
+    }
+    // Close the database connection
+    db_conn_close();
 }

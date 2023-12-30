@@ -90,15 +90,15 @@ void Register::on_registerButton_clicked()
 
         if(register_query.exec()){
             QSqlQuery add_table_income;
-            add_table_income.prepare("CREATE TABLE " + register_username + "_in (id INTEGER PRIMARY KEY,date TEXT, reason TEXT, amount INTEGER)");
+            add_table_income.prepare("CREATE TABLE " + register_username + "_in (id INTEGER PRIMARY KEY,date TEXT, reason TEXT, amount INTEGER,remarks TEXT )");
 
             QSqlQuery add_table_expense;
-            add_table_expense.prepare("CREATE TABLE " + register_username + "_ex (id INTEGER PRIMARY KEY,date TEXT ,reason TEXT, amount INTEGER)");
+            add_table_expense.prepare("CREATE TABLE " + register_username + "_ex (id INTEGER PRIMARY KEY,date TEXT ,reason TEXT, amount INTEGER,remarks TEXT)");
 
             if (add_table_income.exec() && add_table_expense.exec()){
                 qDebug() << "New tables added";
 
-                QFile file("C:/Users/97798/Desktop/QTP1/Expenditure_Traversing_system/main/temp.txt");
+                QFile file("C:/Users/97798/Desktop/QTP1/Expenditure_Traversing_system/main/text.txt");
                 QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("temp.txt");
                 qDebug() << temp_file_path;
 
