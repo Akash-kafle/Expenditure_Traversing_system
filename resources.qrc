@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/img">
         <file>img/bg.png</file>
-        <file>img/splash_screen.gif</file>
         <file>img/logo.ico</file>
         <file>SF-Pro.ttf</file>
         <file>img/user_green.png</file>
@@ -28,5 +27,6 @@
         <file>img/phone.png</file>
         <file>img/name.png</file>
         <file>img/report.png</file>
+        <file>img/splash_screen11.gif</file>
     </qresource>
 </RCC>
