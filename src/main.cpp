@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     Login w;
     QMovie *movie = new QMovie("C:/Users/97798/Desktop/QTP1/Expenditure_Traversing_system/img/splash_screen11.gif");
     QLabel *processLabel = new QLabel(NULL);
-    processLabel->resize(700,480);
+    processLabel->resize(750,480);
     processLabel->setMovie(movie);
     movie->start();
     processLabel->setWindowIcon(QIcon("C:/Users/97798/Desktop/QTP1/Expenditure_Traversing_system/img/logo.ico"));
