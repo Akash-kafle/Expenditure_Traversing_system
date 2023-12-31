@@ -191,32 +191,6 @@ void MainWindow::set_icons()
 void MainWindow::on_save_button_clicked()
 {
     QVariant date = QDate::currentDate().toString();
-    /*QString id = ui->transaction_ID->text();
-    int id_empty = id.isEmpty();
-
-    QString date = QDate::currentDate().toString();
-    int date_empty = date.isEmpty();
-
-    QString name = ui->name_input->text();
-    int name_empty = name.isEmpty();
-
-    QString address = ui->address_input->text();
-    int address_empty = address.isEmpty();
-
-    QString phone = ui->phone_input->text();
-    int phone_empty = phone.isEmpty();
-
-    QString amount_1 = ui->amount1_input->text();
-    int amount_1_empty = amount_1.isEmpty();
-
-    QString amount_2 = ui->amount2_input->text();
-    int amount_2_empty = amount_2.isEmpty();
-
-    double amount_3_number = amount_1.toDouble() - amount_2.toDouble();
-    QString amount_3 = QString::number(amount_3_number, 'f', 2);
-    int amount_3_empty = amount_3.isEmpty();
-
-    QString remarks = ui->remarks_input->text();*/
     bool all{};
 
     QVariant  reason, id, amount,remarks;
@@ -250,7 +224,7 @@ void MainWindow::on_save_button_clicked()
 
         if (!tableName.isEmpty())
         {
-            save_query.prepare("INSERT INTO " + tableName + " (`id`, date, reason, amount,remarks) VALUES (:id, :date, :reason, :amount,:remarks)");
+            save_query.prepare("INSERT INTO " + tableName + " (`id`, date, reason, amount, remarks) VALUES (:id, :date, :reason, :amount,:remarks)");
             save_query.bindValue(":id", id);
             save_query.bindValue(":date",date);
             save_query.bindValue(":reason", reason);
@@ -290,7 +264,6 @@ void MainWindow::on_save_button_clicked()
             if ("UNIQUE constraint failed: " + with_income_or_expense + ".Transaction ID Unable to fetch row" == save_query.lastError().text())
                 QMessageBox::warning(this, "Same Transaction ID", "Oops, you have a record with same Transaction ID. Try a different one.");
             else
-                // QMessageBox::warning(this, "Error encountered", save_query.lastError().text());
                 qDebug() << save_query.lastError().text();
 
             db_conn_close();
@@ -301,19 +274,6 @@ void MainWindow::on_save_button_clicked()
         QMessageBox::warning(this, "Empty input field", "Have you missed something? Please check it.");
     }
 }
-/*
-void MainWindow::on_calculate_net_amount_btn_clicked()
-{
-    // code repetition; a method can be used for void MainWindow::on_save_button_clicked()
-    // and void MainWindow::on_pushButton_clicked() to use the following
-    QString amount_1 = ui->amount1_input->text();
-    QString amount_2 = ui->amount2_input->text();
-
-    double amount3_number = amount_1.toDouble() - amount_2.toDouble(); // made double
-    QString amount3 = QString::number(amount3_number, 'f', 2);
-    ui->amount3_input->setText(amount3);
-}
-*/
 void MainWindow::on_update_button_clicked()
 {
     // ui->transaction_ID->setReadOnly(true); //makes line edit non-editable
@@ -705,6 +665,7 @@ void MainWindow::on_show_graph_btn_clicked()
     QString temp_file_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("temp.txt");
     qDebug() << temp_file_path;
     QFile file("C:/Users/97798/Desktop/QTP1/Expenditure_Traversing_system/main/text.txt");
+
     if (!file.open(QFile::WriteOnly | QFile::Text))
     {
         qDebug() << "File not opened";
@@ -822,20 +783,20 @@ void MainWindow::createFinancialReport( QString &filePath)
     QList<Transaction> transactions;
 
     // Collect data from the database
-    collectData(transactions, temp_username);
+    collectData(transactions, MainWindow::temp_username);
 
     // Process the data
-    processData(transactions, temp_username);
+    processData(transactions, MainWindow::temp_username);
 
     // Generate the PDF report
-    writeToPDF(transactions, temp_username, filePath);
+    writeToPDF(transactions, MainWindow::temp_username, filePath);
 
     // Inform the user that the report is ready
     QMessageBox::information(this, "Report Generated", "Financial report saved to: " + filePath);
 }
 QMap<QString, double> MainWindow::calculateCategoryTotals(const QString& temp_username, const QStringList& reasons, const QString& tablePrefix) {
     QMap<QString, double> totals;
-
+    db_conn_open();
     for (const QString& reason : reasons) {
         QSqlQuery query;
         query.prepare(QString("SELECT SUM(amount) FROM %1_%2 WHERE reason = :reason").arg(temp_username, tablePrefix));
@@ -851,8 +812,9 @@ QMap<QString, double> MainWindow::calculateCategoryTotals(const QString& temp_us
             totals[reason] = query.value(0).toDouble();
         }
     }
-
+    db_conn_close();
     return totals;
+
 }
 
 double MainWindow::calculateCosineSimilarity(const QMap<QString, double>& vector1, const QMap<QString, double>& vector2) {
@@ -868,6 +830,15 @@ double MainWindow::calculateCosineSimilarity(const QMap<QString, double>& vector
     return dotProduct / (magnitude1 * magnitude2);
 }
 
+double MainWindow::calculateSum(const QMap<QString, double>& vector) {
+    double sumOfSquares = 0.0;
+
+    for (auto it = vector.constBegin(); it != vector.constEnd(); ++it) {
+        sumOfSquares += it.value();
+    }
+
+    return sumOfSquares;
+}
 double MainWindow::calculateMagnitude(const QMap<QString, double>& vector) {
     double sumOfSquares = 0.0;
 
@@ -897,193 +868,7 @@ void MainWindow::writeToPDF(const QList<Transaction>& transactions, const QStrin
         qDebug() << "Cannot open file for reading: " << qPrintable(file.errorString());
     }
 
-    // Create a PDF writer
-    QPdfWriter pdfWriter(filePath);
-    pdfWriter.setPageSize(QPageSize(QPageSize::A4));
-    pdfWriter.setPageOrientation(QPageLayout::Portrait);
-
-    // Create a painter to draw on the PDF
-    QPainter painter(&pdfWriter);
-    painter.setRenderHint(QPainter::Antialiasing);
-    QFont titleFont("Arial", 14, QFont::Bold);
-    QFont headerFont("Arial", 12, QFont::Bold);
-    QFont tableFont("Arial", 10);
-    int leftMargin = 1000;
-    // Set up the report header
-    painter.setFont(titleFont);
-    painter.drawText(QRect(4000, 500, 4000, 500), Qt::AlignLeft, "Financial Report");
-
-    // Set up table headers
-    painter.setFont(headerFont);
-    painter.drawText(QRect(leftMargin, 1500, 1000, 300), Qt::AlignLeft, "Date");
-    painter.drawText(QRect(leftMargin + 2000, 1500, 1000, 300), Qt::AlignLeft, "Type");
-    painter.drawText(QRect(leftMargin + 4000, 1500, 1000, 300), Qt::AlignLeft, "Amount");
-
-    // Set up table rows
-    QFont tableRowFont("Arial", 10);
-    painter.setFont(tableRowFont);
-    int row = 0;
-    int tableStartY = 2000;  // Start the table lower down the page
-    for (Transaction transaction : transactions) {
-        painter.drawText(leftMargin, tableStartY + row * 200,  transaction.date.toString());
-        painter.drawText(leftMargin + 2000, tableStartY + row * 200,  transaction.type);
-        painter.drawText(leftMargin + 4000, tableStartY + row * 200,  QString::number(transaction.amount));
-        row++;
-    }
-
-
-    // Other PDF drawing and writing operations can be added here
-
-    QPieSeries *series = new QPieSeries();
-    double totalIncome = 0;
-    double totalExpense = 0;
-    for (const Transaction& transaction : transactions) {
-        if (transaction.type == "Income") {
-            totalIncome += transaction.amount;
-        } else if (transaction.type == "Expense") {
-            totalExpense += transaction.amount;
-        }
-    }
-    series->append("Income", totalIncome);
-    series->append("Expense", totalExpense);
-    QChart *chart = new QChart();
-    chart->addSeries(series);
-    QChartView *chartView = new QChartView(chart);
-    chartView->setRenderHint(QPainter::Antialiasing);
-
-    // Show the chartView and ensure it has a valid size
-    chartView->resize(640, 480);  // Set a specific size for the chartView
-    chartView->show();
-    QApplication::processEvents();  // Process events to ensure chartView is shown
-
-    QImage image(chartView->size(), QImage::Format_ARGB32);
-    QPainter imagePainter(&image);
-    chartView->render(&imagePainter);
-    imagePainter.end();
-
-    // Calculate the position and size of the pie chart
-    int pieChartX = 1000;
-    int pieChartY = tableStartY + row * 200 + 1000;
-    int pieChartWidth = 6000;
-    int pieChartHeight = 6000;
-
-    // Scale the image and draw it into the PDF
-    QImage scaledImage = image.scaled(pieChartWidth, pieChartHeight, Qt::KeepAspectRatio);
-    painter.drawImage(QRect(pieChartX, pieChartY, scaledImage.width(), scaledImage.height()), scaledImage);
-    // Group transactions by reason and calculate total amount for each reason
-    std::map<std::string, double> incomeTotalsByReason, expenseTotalsByReason;
-    for (const Transaction& transaction : transactions) {
-        std::string reason = transaction.reason.toStdString();
-        if (transaction.type == "Income") {
-            incomeTotalsByReason[reason] += transaction.amount;
-        } else if (transaction.type == "Expense") {
-            expenseTotalsByReason[reason] += transaction.amount;
-        }
-    }
-
-    // Create a function to generate a chart for a given set of totals
-    auto generateChart = [](const std::map<std::string, double>& totalsByReason, const QString& title) {
-        QtCharts::QPieSeries* series = new QtCharts::QPieSeries();
-        for (const auto& pair : totalsByReason) {
-            series->append(QString::fromStdString(pair.first), pair.second);
-        }
-
-        QtCharts::QChart* chart = new QtCharts::QChart();
-        chart->setTitle(title);
-        chart->addSeries(series);
-        chart->legend()->hide();
-
-        return chart;
-    };
-    pdfWriter.newPage();
-    // Generate the income and expense charts
-    QtCharts::QChart* incomeChart = generateChart(incomeTotalsByReason, "Income Chart");
-    QtCharts::QChart* expenseChart = generateChart(expenseTotalsByReason, "Expense Chart");
-
-    // Create a chart view for each chart
-    QtCharts::QChartView* incomeChartView = new QtCharts::QChartView(incomeChart);
-    QtCharts::QChartView* expenseChartView = new QtCharts::QChartView(expenseChart);
-    incomeChartView->setRenderHint(QPainter::Antialiasing);
-    incomeChartView->resize(640, 480);
-    incomeChartView->show();
-    // Render the income chart to the PDF
-    int incomeChartX = 1000;
-    int incomeChartY = tableStartY + row * 200 + 1000;  // Adjust this to move the income chart down
-    incomeChartView->render(&painter, QRect(incomeChartX, incomeChartY, pieChartWidth, pieChartHeight));
-
-    // Render the expense chart to the PDF
-    int expenseChartX = 1000;
-    int expenseChartY = incomeChartY + pieChartHeight + 1000;  // Adjust this to move the expense chart down
-    expenseChartView->render(&painter, QRect(expenseChartX, expenseChartY, pieChartWidth, pieChartHeight));
-
-    // Draw a heading for the cosine similarity section
-    if (transactions.size() > 1) {  // Ensure enough transactions for comparison
-        QMap<QString, double> vector1, vector2;
-
-        double cosineSimilarity = calculateCosineSimilarity(vector1, vector2);
-
-        // Draw a heading for the cosine similarity section
-        painter.setFont(headerFont);
-        painter.drawText(leftMargin, pieChartY + pieChartHeight + 200, "Cosine Similarity:");  // Adjust the vertical position
-        // Draw the cosine similarity value below the pie chart
-
-        int cosineSimilarityY = pieChartY + pieChartHeight + 500; // Adjust this to move the cosine similarity down
-        painter.setFont(tableRowFont);
-        painter.drawText(leftMargin, cosineSimilarityY, QString::number(cosineSimilarity));
-
-        // Interpretation of Cosine Similarity
-        QString interpretation;
-        if (cosineSimilarity == 1) {
-            interpretation = "The cosine similarity of 1 indicates a perfect alignment between your income and expenses."
-                             " Your financial patterns are exceptionally well-balanced.";
-        } else if (cosineSimilarity > 0.8) {
-            interpretation = "With a cosine similarity exceeding 0.8,"
-                             " your spending closely mirrors your income, suggesting a well-maintained financial equilibrium.";
-        } else if (cosineSimilarity > 0.5) {
-            interpretation = "A cosine similarity above 0.5"
-                             " indicates a reasonable alignment between your income and expenses. Your financial habits are generally balanced.";
-        } else if (cosineSimilarity > 0.2) {
-            interpretation = "While the cosine similarity is above 0.2, "
-                             "there are noticeable variations between your income and spending patterns. Consider fine-tuning your budget for better alignment.";
-        } else {
-            if(vector1["income"]<vector2["expense"]){
-            interpretation = "The relatively low cosine similarity suggests a significant mismatch between your income and spending."
-                                 " It's crucial to reassess your financial strategy for better stability.";}
-            else if (vector1["income"]>vector2["expense"]){
-            interpretation = "";
-            }
-        }
-        interpretation += "This insight can guide adjustments in budgeting and financial planning. ";
-        interpretation += "Consider reassessing your expenses and identifying areas for potential savings. ";
-        interpretation += "Ensure that your financial goals align with your current spending habits. ";
-        interpretation += "Regularly monitoring and adjusting your budget can help maintain a healthier financial profile. ";
-        interpretation += "Seeking professional financial advice may offer valuable insights and strategies for improvement. ";
-        interpretation += "Remember, financial well-being is an ongoing process that benefits from proactive management. ";
-        interpretation += "Take steps to align your spending with your financial goals for a more secure future. ";
-        interpretation += "Understanding these patterns can empower you to make informed decisions for financial stability. ";
-        interpretation += "Consider creating a detailed budget to optimize your spending and savings. ";
-        interpretation += "Striving for consistency between your income and expenses contributes to long-term financial success.";
-
-        QTextOption textOption;
-        textOption.setWrapMode(QTextOption::WordWrap);
-
-        // Define the rectangle for drawing text, adjust the width as needed
-        int interpretationWidth = 8000; // Adjust the width based on your layout
-        QRect interpretationRect(leftMargin, cosineSimilarityY + 200, interpretationWidth, 2000);
-
-        // Draw the interpretation text with word wrapping
-        painter.setFont(tableRowFont);
-        painter.drawText(interpretationRect, interpretation, textOption);
-  }
-
-    // End painting and close the PDF
-    painter.end();
-    file.close();
-    chartView->close();
-}
-
-void MainWindow::processData(const QList<Transaction>& transactions, const QString& temp_username){
-    // Calculate totals for income and expense categories
+    db_conn_open();
     QSqlQuery query;
     double totalIncome = 0.0;
     int numIncomeTransactions = 0;
@@ -1147,12 +932,264 @@ void MainWindow::processData(const QList<Transaction>& transactions, const QStri
             return;}
     }
     double previousPeriodIncome = query.value(0).toDouble();
-    double percentageChange;
+    int percentageChang{};
 
     // Calculate the percentage change in income from the previous period
     if(previousPeriodIncome!=0){
-        double percentageChange = (totalIncome - previousPeriodIncome) / previousPeriodIncome * 100.0;
+        percentageChang = (totalIncome - previousPeriodIncome) / previousPeriodIncome * 100.0;
     }
+
+    // Create a PDF writer
+    QPdfWriter pdfWriter(filePath);
+    pdfWriter.setPageSize(QPageSize(QPageSize::A4));
+    pdfWriter.setPageOrientation(QPageLayout::Portrait);
+
+    // Create a painter to draw on the PDF
+    QPainter painter(&pdfWriter);
+    painter.setRenderHint(QPainter::Antialiasing);
+    QFont titleFont("Arial", 14, QFont::Bold);
+    QFont headerFont("Arial", 12, QFont::Bold);
+    QFont tableFont("Arial", 10);
+    int leftMargin = 1000;
+    // Set up the report header
+    painter.setFont(titleFont);
+    painter.drawText(QRect(4000, 500, 4000, 500), Qt::AlignLeft, "Financial Report");
+
+    // Set up table headers
+    painter.setFont(headerFont);
+    painter.drawText(QRect(leftMargin, 1500, 1000, 300), Qt::AlignLeft, "Date");
+    painter.drawText(QRect(leftMargin + 2000, 1500, 1000, 300), Qt::AlignLeft, "Type");
+    painter.drawText(QRect(leftMargin + 4000, 1500, 1000, 300), Qt::AlignLeft, "Amount");
+
+    // Set up table rows
+    QFont tableRowFont("Arial", 10);
+    painter.setFont(tableRowFont);
+    int row = 0;
+    int tableStartY = 2000;  // Start the table lower down the page
+    for (Transaction transaction : transactions) {
+        painter.drawText(leftMargin, tableStartY + row * 200,  transaction.date.toString());
+        painter.drawText(leftMargin + 2000, tableStartY + row * 200,  transaction.type);
+        painter.drawText(leftMargin + 4000, tableStartY + row * 200,  QString::number(transaction.amount));
+        row++;
+    }
+    int additionalTextY = tableStartY + row * 200 + 100; // Start below the table with some space
+    painter.drawText(1000, additionalTextY, "Average income: ");
+    painter.drawText(leftMargin + 2000, additionalTextY, "Rs. "+QString::number(averageIncome));
+
+    additionalTextY += 200; // Move down for the next line
+    painter.drawText(1000, additionalTextY, "Average expense: ");
+    painter.drawText(leftMargin + 2000, additionalTextY, "Rs. "+QString::number(averageExpense));
+
+    additionalTextY += 200;
+    painter.drawText( 1000, additionalTextY, "Standard deviation of income: ");
+    painter.drawText(leftMargin + 2500, additionalTextY, QString::number(standardDeviation));
+
+    additionalTextY += 200;
+    painter.drawText(1000, additionalTextY, "Percentage change of income: ");
+    painter.drawText(leftMargin + 2500, additionalTextY, QString::number(percentageChang)+"%");
+
+    // Other PDF drawing and writing operations can be added here
+    int pieChartY = tableStartY + row * 200 + 1000;
+    int pieChartHeight = 6000;
+
+    // Scale the image and draw it into the PDF
+    // Adding bar graph to pdf
+
+
+    // Create bar sets for income and expense
+    QtCharts::QBarSet *incomeSet = new QtCharts::QBarSet("Income");
+    QtCharts::QBarSet *expenseSet = new QtCharts::QBarSet("Expense");
+
+    // Customize the appearance of the bar sets
+    incomeSet->setColor(Qt::blue);
+    expenseSet->setColor(Qt::red);
+
+    // Add data to the bar sets
+    for (const QString &reason : reasons) {
+        *incomeSet << incomeTotals[reason];
+        *expenseSet << expenseTotals[reason];
+    }
+
+    // Create a bar series and add the bar sets
+    QtCharts::QBarSeries *series = new QtCharts::QBarSeries();
+    series->append(incomeSet);
+    series->append(expenseSet);
+
+    // Customize the appearance of the bar series
+    series->setBarWidth(0.8);
+
+    // Create a chart, add the series, and customize the chart
+    QtCharts::QChart *chart = new QtCharts::QChart();
+    chart->addSeries(series);
+    chart->setTitle("Income and Expense");
+    chart->setAnimationOptions(QtCharts::QChart::NoAnimation);
+
+    // Customize the appearance of the chart
+    chart->setBackgroundBrush(Qt::lightGray);
+    chart->setPlotAreaBackgroundBrush(Qt::white);
+    chart->setPlotAreaBackgroundVisible(true);
+
+    // Create a chart view
+    QtCharts::QChartView *chartView = new QtCharts::QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+
+    // Show the chartView and ensure it has a valid size
+    chartView->resize(1000, 1000);  // Set a specific size for the chartView
+    chartView->show();
+
+
+
+    // Render the chart into the PDF
+    QPixmap pix = chartView->grab();
+
+    int h = painter.window().height()*0.35;
+    int w = h * 1.1;
+    int x = (painter.window().width() / 2) - (w/2);
+    int y = pieChartY;  // Use the y-coordinate for the pie chart
+    //chartView->resize(w, h);
+    //QThread::msleep(500);
+    painter.drawPixmap(x, y, w, h, pix);
+    //    chartView->render(&painter, QRect(x, y, w, h));
+    QThread::msleep(100);
+
+
+
+    // Draw a heading for the cosine similarity section
+    if (transactions.size() > 1) {  // Ensure enough transactions for comparison
+        QMap<QString, double> vector1, vector2;
+
+        vector1 = calculateCategoryTotals(temp_username, reasons, "in");
+        vector2 = calculateCategoryTotals(temp_username, reasons, "ex");
+        double cosineSimilarity = calculateCosineSimilarity(vector1, vector2);
+        double v1sum = calculateSum(vector1);
+        double v2sum = calculateSum(vector2);
+
+        // Draw a heading for the cosine similarity section
+        painter.setFont(headerFont);
+        painter.drawText(leftMargin, pieChartY + pieChartHeight , "Cosine Similarity:");  // Adjust the vertical position
+        // Draw the cosine similarity value below the pie chart
+
+        int cosineSimilarityY = pieChartY + pieChartHeight + 300; // Adjust this to move the cosine similarity down
+        painter.setFont(tableRowFont);
+        painter.drawText(leftMargin, cosineSimilarityY, QString::number(cosineSimilarity));
+
+        // Interpretation of Cosine Similarity
+        QString interpretation;
+        if (cosineSimilarity == 1) {
+            interpretation = "The cosine similarity of 1 indicates a perfect alignment between your income and expenses."
+                             " Your financial patterns are exceptionally well-balanced.";
+        } else if (cosineSimilarity > 0.8) {
+            interpretation = "With a cosine similarity exceeding 0.8,"
+                             " your spending closely mirrors your income, suggesting a well-maintained financial equilibrium.";
+        } else if (cosineSimilarity > 0.5) {
+            interpretation = "A cosine similarity above 0.5"
+                             " indicates a reasonable alignment between your income and expenses. Your financial habits are generally balanced.";
+        } else if (cosineSimilarity > 0.2) {
+            interpretation = "While the cosine similarity is above 0.2, "
+                             "there are noticeable variations between your income and spending patterns. Consider fine-tuning your budget for better alignment.";
+        } else {
+            qDebug() << v1sum << "::" << v2sum;
+            if(v1sum<v2sum){
+                interpretation = "The relatively low cosine similarity suggests a significant mismatch between your income and spending."
+                                 " It's crucial to reassess your financial strategy for better stability.";
+            }
+            else if (v1sum>v2sum){
+                interpretation = "The relatively low cosine similarity suggests a significant mismatch between your income and spending."
+                                 "Your financial strategy provides stability to your budget";
+            }
+        }
+        interpretation += "This insight can guide adjustments in budgeting and financial planning. ";
+        interpretation += "Consider reassessing your expenses and identifying areas for potential savings. ";
+        interpretation += "Ensure that your financial goals align with your current spending habits. ";
+        interpretation += "Regularly monitoring and adjusting your budget can help maintain a healthier financial profile. ";
+        interpretation += "Seeking professional financial advice may offer valuable insights and strategies for improvement. ";
+        interpretation += "Remember, financial well-being is an ongoing process that benefits from proactive management. ";
+        interpretation += "Take steps to align your spending with your financial goals for a more secure future. ";
+        interpretation += "Understanding these patterns can empower you to make informed decisions for financial stability. ";
+        interpretation += "Consider creating a detailed budget to optimize your spending and savings. ";
+
+
+        QTextOption textOption;
+        textOption.setWrapMode(QTextOption::WordWrap);
+
+        // Define the rectangle for drawing text, adjust the width as needed
+        int interpretationWidth = 8000; // Adjust the width based on your layout
+        QRect interpretationRect(leftMargin, cosineSimilarityY + 200, interpretationWidth, 3000);
+
+        // Draw the interpretation text with word wrapping
+        painter.setFont(tableRowFont);
+        painter.drawText(interpretationRect, interpretation, textOption);
+    }
+    QApplication::processEvents();  // Process events to ensure chartView is shown
+    // End painting and close the PDF
+    painter.end();
+    file.close();
+    db_conn_close();
+    //expenseChartView->close();
+    //incomeChartView->close();
+}
+
+void MainWindow::processData(const QList<Transaction>& transactions, const QString& temp_username){
+    // Calculate totals for income and expense categories
+    db_conn_open();
+    QSqlQuery query;
+    double totalIncome = 0.0;
+    int numIncomeTransactions = 0;
+    double totalExpense = 0.0;  // Added for expense calculation
+    int numExpenseTransactions = 0;  // Added for expense calculation
+
+    for (Transaction transaction : transactions) {
+        if (transaction.type == "income") {
+            totalIncome += transaction.amount;
+            numIncomeTransactions++;
+        } else if (transaction.type == "expense") {  // Added for expense calculation
+            totalExpense += transaction.amount;
+            numExpenseTransactions++;
+        } else {
+            qDebug() << "Invalid transaction type: " << transaction.type;  // Handle invalid types
+        }
+    }
+
+    double averageIncome = totalIncome / numIncomeTransactions;
+    double averageExpense = totalExpense / numExpenseTransactions;
+
+    // Calculate totals for income and expense categories
+    QStringList reasons = {"family", "personal", "food", "rent", "travel", "study", "entertainment", "other"};
+    QMap<QString, double> incomeTotals = calculateCategoryTotals(temp_username, reasons, "in");
+    QMap<QString, double> expenseTotals = calculateCategoryTotals(temp_username, reasons, "ex");
+
+    // Calculate cosine similarity between income and expense vectors
+    double cosineSimilarity = calculateCosineSimilarity(incomeTotals, expenseTotals);
+
+    // Calculate the median income
+    QList<double> incomes;
+    for (Transaction transaction : transactions)
+    {
+        if (transaction.type == "income")
+        {
+            incomes.append(transaction.amount);
+        }
+    }
+
+    std::sort(incomes.begin(), incomes.end());
+    double medianIncome = incomes[incomes.size() / 2];
+
+    // Calculate the standard deviation of the income
+    double sumOfSquares = 0.0;
+    for (double income : incomes)
+    {
+        double deviation = income - averageIncome;
+        sumOfSquares += deviation * deviation;
+    }
+
+    double variance = sumOfSquares / (incomes.size() - 1);
+    double standardDeviation = std::sqrt(variance);
+
+    // Fetch the total income from the previous period from the database
+    query.prepare(QString("SELECT SUM(amount) FROM %1_in WHERE date < :startDate").arg(temp_username));
+    query.bindValue(":startDate", QDate::currentDate()); // startDate is the start date of the current period
+    double percentageChange;
+    db_conn_close();
 
 }
 
