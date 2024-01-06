@@ -41,7 +41,7 @@ public:
 
     bool db_conn_open(){
         main_db = QSqlDatabase::addDatabase("QSQLITE");
-        main_db.setDatabaseName("C:/Users/aakas/OneDrive/Desktop/folders/programming/C++,C/Uni_project/Expenditure_Traversing_system/main/main.db");//change path for your system
+        main_db.setDatabaseName("C:/Users/97798/Desktop/QTP1/Expenditure_Traversing_system/main/main.db");//change path for your system
 
         QString db_path = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("main.db");
         qDebug() << db_path;
@@ -114,7 +114,13 @@ private slots:
     QMap<QString, double> calculateCategoryTotals(const QString& temp_username, const QStringList& reasons, const QString& tablePrefix);
     double calculateCosineSimilarity(const QMap<QString, double>& vector1, const QMap<QString, double>& vector2);
     double calculateMagnitude(const QMap<QString, double>& vector);
+    double calculateSum(const QMap<QString, double>& vector);
     double calculateDotProduct(const QMap<QString, double>& vector1, const QMap<QString, double>& vector2);
+    void processData(const QList<Transaction>& transactions, const QString& temp_username);
+    void collectData(QList<Transaction>& transactions, const QString& temp_username);
+    void writeToPDF(const QList<Transaction>& transactions, const QString& temp_username, QString& filePath);
+
+
 
 private:
 

@@ -29,11 +29,11 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>e-Ledger</string>
+   <string>Expenditure Traversing System</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/img/img/ledger_small.png</normaloff>:/img/img/ledger_small.png</iconset>
+   <iconset resource="../resources.qrc">
+    <normaloff>:/img/img/logo.ico</normaloff>:/img/img/logo.ico</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: #ebedee;</string>
@@ -55,38 +55,12 @@
      <string notr="true">background: none;</string>
     </property>
    </widget>
-   <widget class="QLabel" name="plot_title">
-    <property name="geometry">
-     <rect>
-      <x>29</x>
-      <y>24</y>
-      <width>941</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Lato</family>
-      <pointsize>-1</pointsize>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">qproperty-alignment: AlignCenter;
-background-color: #fff;
-color: #374957;
-font-size: 18px;</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>10</x>
       <y>664</y>
-      <width>941</width>
+      <width>961</width>
       <height>80</height>
      </rect>
     </property>
@@ -94,11 +68,13 @@ font-size: 18px;</string>
      <string notr="true">#label, #select_buyer_btn, #select_seller_btn, #select_all_btn{
 	background-color: transparent;
 	color: #374957;
+font: 9pt &quot;SF Pro Display&quot;;
 	font-size: 17px;
 }
 
 #select_month_menu, #view_by_menu{
 	border-radius: 8px;
+font: 9pt &quot;SF Pro Display&quot;;
 	background-color: #fff;
 	font-size: 17px;
 	color: #374957;
@@ -108,6 +84,7 @@ font-size: 18px;</string>
 	border-radius: 8px;
 	font-weight: bold;
 	font-size: 17px;
+font: 9pt &quot;SF Pro Display&quot;;
 	color: #fff;
 	padding: 8px;
 	background-color: #32D736;
@@ -127,7 +104,7 @@ font-size: 18px;</string>
      <property name="geometry">
       <rect>
        <x>333</x>
-       <y>20</y>
+       <y>25</y>
        <width>191</width>
        <height>41</height>
       </rect>
@@ -140,10 +117,13 @@ font-size: 18px;</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>20</y>
+       <y>25</y>
        <width>131</width>
        <height>41</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 9pt &quot;SF Pro Display&quot;;</string>
      </property>
      <property name="text">
       <string>For the month of</string>
@@ -152,11 +132,14 @@ font-size: 18px;</string>
     <widget class="QRadioButton" name="select_all_btn">
      <property name="geometry">
       <rect>
-       <x>752</x>
-       <y>27</y>
+       <x>770</x>
+       <y>30</y>
        <width>61</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 9pt &quot;SF Pro Display&quot;;</string>
      </property>
      <property name="text">
       <string>All</string>
@@ -166,29 +149,33 @@ font-size: 18px;</string>
      <property name="geometry">
       <rect>
        <x>654</x>
-       <y>27</y>
+       <y>30</y>
        <width>91</width>
        <height>31</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">font: 9pt &quot;SF Pro Display&quot;;</string>
+     </property>
      <property name="text">
-      <string>expense</string>
+      <string>Expense</string>
      </property>
     </widget>
     <widget class="QPushButton" name="view_btn">
      <property name="geometry">
       <rect>
-       <x>839</x>
-       <y>20</y>
-       <width>101</width>
+       <x>840</x>
+       <y>25</y>
+       <width>81</width>
        <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Lato</family>
-       <pointsize>-1</pointsize>
-       <bold>true</bold>
+       <family>SF Pro Text</family>
+       <pointsize>9</pointsize>
+       <italic>false</italic>
+       <bold>false</bold>
       </font>
      </property>
      <property name="cursor">
@@ -196,6 +183,23 @@ font-size: 18px;</string>
      </property>
      <property name="toolTip">
       <string>Click here to display graph.</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">
+#view_btn {
+	background-color:rgb(0,125,27);
+	border-radius: 10px;
+	color: #fff;
+	font: 10x &quot;SF Pro Text&quot;;
+	padding: 5px;
+}
+
+#view_btn:hover {
+	background-color:rgb(64,156,255);
+}
+
+
+</string>
      </property>
      <property name="text">
       <string>  View</string>
@@ -208,20 +212,23 @@ font-size: 18px;</string>
      <property name="geometry">
       <rect>
        <x>551</x>
-       <y>27</y>
+       <y>30</y>
        <width>95</width>
        <height>31</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">font: 9pt &quot;SF Pro Display&quot;;</string>
+     </property>
      <property name="text">
-      <string>income</string>
+      <string>Income</string>
      </property>
     </widget>
     <widget class="QComboBox" name="select_month_menu">
      <property name="geometry">
       <rect>
        <x>144</x>
-       <y>20</y>
+       <y>25</y>
        <width>171</width>
        <height>41</height>
       </rect>
@@ -231,24 +238,20 @@ font-size: 18px;</string>
      </property>
     </widget>
    </widget>
-   <widget class="QPushButton" name="help_button">
+   <widget class="QLabel" name="plot_title">
     <property name="geometry">
      <rect>
-      <x>922</x>
-      <y>35</y>
-      <width>32</width>
-      <height>32</height>
+      <x>30</x>
+      <y>20</y>
+      <width>941</width>
+      <height>41</height>
      </rect>
     </property>
-    <property name="cursor">
-     <cursorShape>PointingHandCursor</cursorShape>
-    </property>
-    <property name="toolTip">
-     <string>Help</string>
-    </property>
     <property name="styleSheet">
-     <string notr="true">background: transparent;
-</string>
+     <string notr="true">qproperty-alignment: AlignCenter;
+background-color: #fff;
+color: #374957;
+font: 900 18px &quot;SF Pro Text&quot;;</string>
     </property>
     <property name="text">
      <string/>
@@ -272,6 +275,8 @@ font-size: 18px;</string>
   <tabstop>select_all_btn</tabstop>
   <tabstop>view_btn</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

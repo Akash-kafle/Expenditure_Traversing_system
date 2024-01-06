@@ -12,25 +12,25 @@
 //#include <QGuiApplication>
 //#include <QStyleOptionTitleBar>
 #include <QIcon>
+#include<QFontDatabase>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-
     Login w;
-    QMovie *movie = new QMovie(":/img/img/");
+    QMovie *movie = new QMovie("C:/Users/97798/Desktop/QTP1/Expenditure_Traversing_system/img/splash_screen11.gif");
     QLabel *processLabel = new QLabel(NULL);
-    processLabel->resize(740,490);
+    processLabel->resize(750,480);
     processLabel->setMovie(movie);
     movie->start();
-    processLabel->setWindowIcon(QIcon(":/img/img/ledger_small.png"));
+    processLabel->setWindowIcon(QIcon("C:/Users/97798/Desktop/QTP1/Expenditure_Traversing_system/img/logo.ico"));
     processLabel->setWindowFlags(Qt::FramelessWindowHint);
     processLabel->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, processLabel->size(), qApp->desktop()->availableGeometry()/*QGuiApplication::screens()*/));
     processLabel->show();
-    w.setWindowTitle("ETS");
+    w.setWindowTitle("Expenditure Traversing System");
 
-    QTimer::singleShot(2500, processLabel, SLOT(close()));
-    QTimer::singleShot(2500, &w, SLOT(show()));
+    QTimer::singleShot(2700, processLabel, SLOT(close()));
+    QTimer::singleShot(2700, &w, SLOT(show()));
 
     return a.exec();
 }
